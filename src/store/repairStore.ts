@@ -7,7 +7,7 @@ interface RepairStore {
   loading: boolean;
   error: string | null;
   fetchRepairs: () => Promise<void>;
-  createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<RepairCard>;
   updateRepair: (id: string, updates: Partial<RepairCard>) => Promise<void>;
   updateStatus: (id: string, status: RepairStatus) => Promise<void>;
 }
@@ -48,38 +48,43 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         .from('repairs')
         .select('id')
         .order('id', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        throw fetchError;
-      }
+      if (fetchError) throw fetchError;
 
       // Generate the next ID
-      const nextId = lastRepair
-        ? `URB${String(Number(lastRepair.id.replace('URB', '')) + 1).padStart(3, '0')}`
-        : 'URB100';
+      const lastId = lastRepair?.[0]?.id || 'R0000';
+      const nextNumber = parseInt(lastId.substring(1)) + 1;
+      const nextId = `R${nextNumber.toString().padStart(4, '0')}`;
 
-      // Create the new repair
-      const { error: insertError } = await supabase
+      const newRepair = {
+        ...repair,
+        id: nextId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      const { data, error } = await supabase
         .from('repairs')
-        .insert([
-          {
-            ...repair,
-            id: nextId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ]);
+        .insert([newRepair])
+        .select()
+        .single();
 
-      if (insertError) throw insertError;
+      if (error) throw error;
+      
+      if (!data) {
+        throw new Error('No data received from database');
+      }
 
-      // Fetch all repairs again to update the store
-      await get().fetchRepairs();
+      set((state) => ({
+        repairs: [data, ...state.repairs],
+      }));
+
+      return data;
     } catch (error) {
       console.error('Error creating repair:', error);
       set({ error: (error as Error).message });
-      throw error; // Re-throw to handle in the component
+      throw error;
     } finally {
       set({ loading: false });
     }

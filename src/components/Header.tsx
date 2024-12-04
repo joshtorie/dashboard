@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { PlusCircle, Wrench, Archive, Search, LayoutDashboard } from 'lucide-react';
+import { PlusCircle, Wrench, Archive, Search, LayoutDashboard, Settings } from 'lucide-react';
 import NewRepairModal from './NewRepairModal';
 
 interface TooltipProps {
@@ -29,6 +29,7 @@ export default function Header() {
     { icon: Wrench, label: 'Open Repairs', path: '/repairs' },
     { icon: Archive, label: 'Archive', path: '/archive' },
     { icon: Search, label: 'Search', path: '/search' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (

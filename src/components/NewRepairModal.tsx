@@ -2,11 +2,84 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRepairStore } from '../store/repairStore';
+import { useSettingsStore } from '../store/settingsStore';
+import { format } from 'date-fns';
 
 interface NewRepairModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const printRepairTicket = (repair: any) => {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Repair Ticket #${repair.id}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+          }
+          .section {
+            margin-bottom: 20px;
+          }
+          .label {
+            font-weight: bold;
+            margin-right: 10px;
+          }
+          @media print {
+            body {
+              padding: 0;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Repair Ticket #${repair.id}</h1>
+          <p>Created: ${format(new Date(repair.createdAt), 'PPp')}</p>
+        </div>
+        
+        <div class="section">
+          <p><span class="label">Customer:</span> ${repair.customerName}</p>
+          <p><span class="label">Phone:</span> ${repair.phoneNumber}</p>
+          <p><span class="label">Status:</span> ${repair.status}</p>
+        </div>
+
+        <div class="section">
+          <h2>Complaint</h2>
+          <p>${repair.complaint}</p>
+        </div>
+
+        <div class="section">
+          <h2>Technician Notes</h2>
+          <p>${repair.technicianNotes || 'No notes yet'}</p>
+        </div>
+      </body>
+    </html>
+  `;
+
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.onload = () => {
+    printWindow.print();
+    // Close the print window after printing
+    setTimeout(() => printWindow.close(), 500);
+  };
+};
 
 export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps) {
   const [formData, setFormData] = useState({
@@ -15,6 +88,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     complaint: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { autoPrintEnabled } = useSettingsStore();
 
   const createRepair = useRepairStore((state) => state.createRepair);
 
@@ -22,12 +96,16 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await createRepair({
+      const newRepair = await createRepair({
         ...formData,
         status: 'Open',
         technicianNotes: '',
       });
       toast.success('Repair ticket created successfully');
+      // Only print if auto-print is enabled
+      if (autoPrintEnabled) {
+        printRepairTicket(newRepair);
+      }
       onClose();
       setFormData({ customerName: '', phoneNumber: '', complaint: '' });
     } catch (error) {

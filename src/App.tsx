@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import OpenRepairs from './pages/OpenRepairs';
 import Archive from './pages/Archive';
 import SearchPage from './pages/SearchPage';
+import Settings from './pages/Settings';
 import { useRepairStore } from './store/repairStore';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="/repairs" element={<OpenRepairs />} />
             <Route path="/archive" element={<Archive />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
         <Toaster position="top-right" />
