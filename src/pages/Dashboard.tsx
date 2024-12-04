@@ -20,7 +20,6 @@ export default function Dashboard() {
     { status: 'Open', color: 'bg-yellow-100 text-yellow-800' },
     { status: 'Hold', color: 'bg-red-100 text-red-800' },
     { status: 'Notified', color: 'bg-blue-100 text-blue-800' },
-    { status: 'Solved', color: 'bg-green-100 text-green-800' },
   ];
 
   return (
