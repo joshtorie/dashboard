@@ -77,10 +77,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
             onChange={handleStatusChange}
             className="w-full sm:w-auto border rounded-md p-2"
           >
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="Open">Open</option>
+            <option value="Hold">Hold</option>
+            <option value="Notified">Notified</option>
+            <option value="Solved">Solved</option>
           </select>
         </div>
 
