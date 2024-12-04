@@ -41,90 +41,82 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">New Repair Ticket</h2>
           <button 
             onClick={onClose} 
-            className="text-gray-500 hover:text-gray-700"
+            className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
             disabled={isSubmitting}
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="customerName" className="block font-medium text-gray-700">
               Customer Name
             </label>
             <input
               type="text"
-              required
+              id="customerName"
               value={formData.customerName}
               onChange={(e) =>
-                setFormData({ ...formData, customerName: e.target.value })
+                setFormData((prev) => ({ ...prev, customerName: e.target.value }))
               }
-              disabled={isSubmitting}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+          <div className="space-y-2">
+            <label htmlFor="phoneNumber" className="block font-medium text-gray-700">
               Phone Number
             </label>
             <input
               type="tel"
-              required
+              id="phoneNumber"
               value={formData.phoneNumber}
               onChange={(e) =>
-                setFormData({ ...formData, phoneNumber: e.target.value })
+                setFormData((prev) => ({ ...prev, phoneNumber: e.target.value }))
               }
-              disabled={isSubmitting}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Customer Complaint
+          <div className="space-y-2">
+            <label htmlFor="complaint" className="block font-medium text-gray-700">
+              Complaint
             </label>
             <textarea
-              required
+              id="complaint"
               value={formData.complaint}
               onChange={(e) =>
-                setFormData({ ...formData, complaint: e.target.value })
+                setFormData((prev) => ({ ...prev, complaint: e.target.value }))
               }
-              rows={3}
-              disabled={isSubmitting}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
+              required
             />
           </div>
 
-          <div className="flex justify-end space-x-3">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
+              className="w-full sm:w-1/2 p-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
+              className="w-full sm:w-1/2 p-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 flex items-center"
             >
-              {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Creating...
-                </>
-              ) : (
-                'Create Ticket'
-              )}
+              {isSubmitting ? 'Creating...' : 'Create Ticket'}
             </button>
           </div>
         </form>

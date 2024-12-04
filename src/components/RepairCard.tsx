@@ -29,7 +29,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const minimizedContent = (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
       <div>
         <h3 className="font-medium">{repair.customerName}</h3>
         <p className="text-sm text-gray-500">
@@ -38,80 +38,80 @@ export default function RepairCard({ repair }: RepairCardProps) {
       </div>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-1 hover:bg-gray-100 rounded"
+        className="p-2 hover:bg-gray-100 rounded self-end sm:self-center"
       >
-        {isExpanded ? <ChevronUp /> : <ChevronDown />}
+        {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
       </button>
     </div>
   );
 
   const expandedContent = (
     <div className="mt-4 space-y-4">
-      <div className="flex items-center space-x-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <a
           href={`tel:${repair.phoneNumber}`}
-          className="flex items-center text-blue-600 hover:text-blue-700"
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
         >
-          <Phone className="w-4 h-4 mr-1" />
-          {repair.phoneNumber}
+          <Phone className="w-5 h-5" />
+          <span>{repair.phoneNumber}</span>
+        </a>
+        <a
+          href={getWhatsAppLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center space-x-2 text-green-600 hover:text-green-700"
+        >
+          <Share2 className="w-5 h-5" />
+          <span>Send WhatsApp</span>
         </a>
       </div>
 
-      <div>
-        <h4 className="font-medium">Customer Complaint</h4>
-        <p className="text-gray-700">{repair.complaint}</p>
-      </div>
-
-      <div>
-        <h4 className="font-medium">Technician Notes</h4>
-        {isEditing ? (
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            onBlur={() => {
-              handleNotesUpdate();
-              setIsEditing(false);
-            }}
-            className="w-full p-2 border rounded"
-            rows={3}
-          />
-        ) : (
-          <p
-            onClick={() => setIsEditing(true)}
-            className="text-gray-700 cursor-pointer"
+      <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label htmlFor="status" className="font-medium min-w-[80px]">
+            Status:
+          </label>
+          <select
+            id="status"
+            value={repair.status}
+            onChange={handleStatusChange}
+            className="w-full sm:w-auto border rounded-md p-2"
           >
-            {repair.technicianNotes || 'Click to add notes...'}
-          </p>
-        )}
-      </div>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
 
-      <div className="flex items-center justify-between">
-        <select
-          value={repair.status}
-          onChange={handleStatusChange}
-          className="border rounded p-1"
-        >
-          <option value="Open">Open</option>
-          <option value="Hold">Hold</option>
-          <option value="Notified">Notified</option>
-          <option value="Solved">Solved</option>
-        </select>
-
-        <div className="flex space-x-2">
-          <a
-            href={getWhatsAppLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 text-green-600 hover:bg-green-50 rounded"
-          >
-            <Share2 className="w-5 h-5" />
-          </a>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-          >
-            <Edit2 className="w-5 h-5" />
-          </button>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label htmlFor="notes" className="font-medium">
+              Technician Notes:
+            </label>
+            <button
+              onClick={() => {
+                if (isEditing) {
+                  handleNotesUpdate();
+                }
+                setIsEditing(!isEditing);
+              }}
+              className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 p-2"
+            >
+              <Edit2 className="w-4 h-4" />
+              <span>{isEditing ? 'Save' : 'Edit'}</span>
+            </button>
+          </div>
+          {isEditing ? (
+            <textarea
+              id="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full border rounded-md p-2 min-h-[100px]"
+            />
+          ) : (
+            <p className="text-gray-600 whitespace-pre-wrap">{notes || 'No notes yet'}</p>
+          )}
         </div>
       </div>
     </div>
