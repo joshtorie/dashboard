@@ -159,18 +159,29 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     const fileName = `${repairId}-photo.jpg`;
     console.log('Attempting to upload image with filename:', fileName);
     
-    const { data, error } = await supabase.storage
-      .from('repair-photos')
-      .upload(fileName, imageFile);
+    try {
+      const { data, error } = await supabase.storage
+        .from('repair-photos')
+        .upload(fileName, imageFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-    if (error) {
-      console.error('Error uploading image:', error);
-      toast.error('Failed to upload image');
+      if (error) {
+        console.error('Error uploading image:', error);
+        console.error('Error details:', error.message, error.statusCode);
+        toast.error(`Failed to upload image: ${error.message}`);
+        return null;
+      }
+
+      console.log('Image uploaded successfully, returning filename:', fileName);
+      console.log('Upload response:', data);
+      return fileName;
+    } catch (error) {
+      console.error('Unexpected error during upload:', error);
+      toast.error('Unexpected error during upload');
       return null;
     }
-
-    console.log('Image uploaded successfully, returning filename:', fileName);
-    return fileName;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -188,16 +199,26 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         const fileName = await uploadImage(newRepair.id);
         if (fileName) {
           console.log('Updating repair record with photoUrl:', fileName);
-          const { data, error } = await supabase
-            .from('repairs')
-            .update({ photoUrl: fileName })
-            .eq('id', newRepair.id)
-            .select();
+          try {
+            const { data, error } = await supabase
+              .from('repairs')
+              .update({ 
+                photoUrl: fileName,
+                updatedAt: new Date().toISOString()
+              })
+              .eq('id', newRepair.id)
+              .select('*')
+              .single();
 
-          if (error) {
-            console.error('Error updating repair with photoUrl:', error);
-          } else {
-            console.log('Successfully updated repair with photoUrl:', data);
+            if (error) {
+              console.error('Error updating repair with photoUrl:', error);
+              toast.error('Failed to update repair with photo URL');
+            } else {
+              console.log('Successfully updated repair with photoUrl:', data);
+            }
+          } catch (error) {
+            console.error('Unexpected error updating repair:', error);
+            toast.error('Failed to update repair record');
           }
         }
       }
