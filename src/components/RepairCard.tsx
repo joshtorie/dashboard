@@ -227,20 +227,18 @@ export default function RepairCard({ repair }: RepairCardProps) {
         </div>
       )}
 
-      <div className="flex items-center space-x-4 mt-4">
-        <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700">
-          <ImageIcon className="w-5 h-5" />
-          <span>{showImage ? 'Hide Image' : 'Show Image'}</span>
+      <div className="flex items-center justify-between mt-4 space-x-4">
+        <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700 w-full">
+          <ImageIcon className="w-5 h-5 mx-auto" />
         </button>
-        <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700">
-          <Edit2 className="w-5 h-5" />
-          <span>{isEditing ? 'Save' : 'Edit'}</span>
+        <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700 w-full">
+          <Edit2 className="w-5 h-5 mx-auto" />
         </button>
-        <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700">
-          <Printer className="w-5 h-5" />
+        <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700 w-full">
+          <Printer className="w-5 h-5 mx-auto" />
         </button>
-        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
-          <Share2 className="w-5 h-5" />
+        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 w-full">
+          <Share2 className="w-5 h-5 mx-auto" />
         </a>
       </div>
     </div>
