@@ -20,21 +20,31 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   fetchRepairs: async () => {
     set({ loading: true, error: null });
     try {
+      console.log('Fetching repairs from Supabase...');
       const { data, error } = await supabase
         .from('repairs')
         .select('*')
         .order('createdAt', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
       
       if (!data) {
+        console.error('No data received from Supabase');
         throw new Error('No data received from database');
       }
       
+      console.log('Received repairs:', data);
       set({ repairs: data });
     } catch (error) {
-      console.error('Error fetching repairs:', error);
-      set({ error: (error as Error).message });
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+      });
+      set({ error: error.message || 'Failed to fetch repairs' });
     } finally {
       set({ loading: false });
     }
@@ -43,6 +53,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   createRepair: async (repair) => {
     set({ loading: true, error: null });
     try {
+      console.log('Creating new repair in Supabase...');
       // First, get the last repair ID
       const { data: lastRepair, error: fetchError } = await supabase
         .from('repairs')
@@ -50,7 +61,10 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         .order('id', { ascending: false })
         .limit(1);
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        console.error('Supabase error:', fetchError);
+        throw fetchError;
+      }
 
       // Generate the next ID
       const lastId = lastRepair?.[0]?.id || 'URB0000';
@@ -64,26 +78,36 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         updatedAt: new Date().toISOString(),
       };
 
+      console.log('Inserting new repair into Supabase...');
       const { data, error } = await supabase
         .from('repairs')
         .insert([newRepair])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
       
       if (!data) {
+        console.error('No data received from Supabase');
         throw new Error('No data received from database');
       }
 
+      console.log('New repair created:', data);
       set((state) => ({
         repairs: [data, ...state.repairs],
       }));
 
       return data;
     } catch (error) {
-      console.error('Error creating repair:', error);
-      set({ error: (error as Error).message });
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+      });
+      set({ error: error.message || 'Failed to create repair' });
       throw error;
     } finally {
       set({ loading: false });
@@ -93,18 +117,27 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   updateRepair: async (id, updates) => {
     set({ loading: true, error: null });
     try {
+      console.log('Updating repair in Supabase...');
       const { error } = await supabase
         .from('repairs')
         .update({ ...updates, updatedAt: new Date().toISOString() })
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
+      console.log('Repair updated successfully');
       // Fetch all repairs again to update the store
       await get().fetchRepairs();
     } catch (error) {
-      console.error('Error updating repair:', error);
-      set({ error: (error as Error).message });
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+      });
+      set({ error: error.message || 'Failed to update repair' });
       throw error;
     } finally {
       set({ loading: false });
