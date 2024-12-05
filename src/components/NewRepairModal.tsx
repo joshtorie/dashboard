@@ -103,6 +103,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
+        await videoRef.current.play();
       }
       setShowCamera(true);
     } catch (error) {
@@ -114,6 +115,9 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
       streamRef.current = null;
     }
     setShowCamera(false);
@@ -133,7 +137,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             setImageFile(file);
             setImagePreview(URL.createObjectURL(blob));
           }
-        }, 'image/jpeg');
+        }, 'image/jpeg', 0.8);
       }
       stopCamera();
     }
@@ -265,7 +269,6 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
                 type="button"
                 onClick={startCamera}
                 className="flex items-center space-x-2 px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-md"
-                disabled={showCamera}
               >
                 <Camera className="w-5 h-5" />
                 <span>Take Photo</span>
@@ -284,7 +287,9 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
                   ref={videoRef}
                   autoPlay
                   playsInline
+                  muted
                   className="w-full rounded-lg"
+                  style={{ maxHeight: '50vh' }}
                 />
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
                   <button
