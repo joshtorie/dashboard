@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer } from 'lucide-react';
+import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer, Image as ImageIcon } from 'lucide-react';
 import { RepairCard as RepairCardType } from '../types/repair';
 import { useRepairStore } from '../store/repairStore';
 import { supabase } from '../lib/supabase';
@@ -30,6 +30,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(repair.technicianNotes);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showImage, setShowImage] = useState(false);
   const updateRepair = useRepairStore((state) => state.updateRepair);
 
   useEffect(() => {
@@ -244,16 +245,24 @@ export default function RepairCard({ repair }: RepairCardProps) {
           <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
         </div>
 
-        {repair.photo_url && imageUrl && (
+        {repair.photo_url && (
           <div className="mt-4">
-            <label className="font-medium block mb-2">
-              Repair Photo:
-            </label>
-            <img 
-              src={imageUrl} 
-              alt="Repair photo" 
-              className="w-full max-w-md rounded-lg shadow-sm"
-            />
+            <button
+              onClick={() => setShowImage(!showImage)}
+              className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
+            >
+              <ImageIcon className="w-5 h-5" />
+              <span>{showImage ? 'Hide Image' : 'Show Image'}</span>
+            </button>
+            {showImage && imageUrl && (
+              <div className="mt-2">
+                <img 
+                  src={imageUrl} 
+                  alt="Repair photo" 
+                  className="w-full max-w-md rounded-lg shadow-sm"
+                />
+              </div>
+            )}
           </div>
         )}
 
