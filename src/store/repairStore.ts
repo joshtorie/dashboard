@@ -53,9 +53,9 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       if (fetchError) throw fetchError;
 
       // Generate the next ID
-      const lastId = lastRepair?.[0]?.id || 'R0000';
-      const nextNumber = parseInt(lastId.substring(1)) + 1;
-      const nextId = `R${nextNumber.toString().padStart(4, '0')}`;
+      const lastId = lastRepair?.[0]?.id || 'URB0000';
+      const nextNumber = parseInt(lastId.substring(3)) + 1;
+      const nextId = `URB${nextNumber.toString().padStart(4, '0')}`;
 
       const newRepair = {
         ...repair,
