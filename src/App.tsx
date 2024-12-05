@@ -12,15 +12,34 @@ import { useRepairStore } from './store/repairStore';
 function App() {
   const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
   const loading = useRepairStore((state) => state.loading);
+  const error = useRepairStore((state) => state.error);
 
   useEffect(() => {
-    fetchRepairs();
+    const initializeApp = async () => {
+      try {
+        await fetchRepairs();
+      } catch (err) {
+        console.error('Failed to fetch repairs:', err);
+      }
+    };
+    initializeApp();
   }, [fetchRepairs]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-red-600">
+          <h2 className="text-xl font-bold mb-2">Error Loading Application</h2>
+          <p>{error}</p>
+        </div>
       </div>
     );
   }
