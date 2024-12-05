@@ -169,14 +169,13 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
       if (error) {
         console.error('Error uploading image:', error);
-        console.error('Error details:', error.message, error.statusCode);
         toast.error(`Failed to upload image: ${error.message}`);
         return null;
       }
 
-      console.log('Image uploaded successfully, returning filename:', fileName);
-      console.log('Upload response:', data);
-      return fileName;
+      const publicUrl = `${supabaseUrl}/storage/v1/object/public/repair-photos/${fileName}`;
+      console.log('Image uploaded successfully, returning public URL:', publicUrl);
+      return publicUrl;
     } catch (error) {
       console.error('Unexpected error during upload:', error);
       toast.error('Unexpected error during upload');
