@@ -170,14 +170,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-4">
-            <h3 className="text-lg font-semibold">{repair.customerName}</h3>
+            <h3 className="text-lg font-semibold">{repair.customerName} (ID: {repair.id})</h3>
             <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>
               {repair.status}
             </span>
-          </div>
-          <div className="flex items-center mt-2 text-gray-600">
-            <Phone className="w-4 h-4 mr-2" />
-            <span>{repair.phoneNumber}</span>
           </div>
         </div>
         <button
@@ -191,111 +187,58 @@ export default function RepairCard({ repair }: RepairCardProps) {
   );
 
   const expandedContent = (
-    <div className="mt-4 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <a
-          href={`tel:${repair.phoneNumber}`}
-          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
-        >
+    <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold">{repair.customerName} (ID: {repair.id})</h3>
+          <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>{repair.status}</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700">
+            <ImageIcon className="w-5 h-5" />
+          </button>
+          <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700">
+            <Edit2 className="w-5 h-5" />
+          </button>
+          <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700">
+            <Printer className="w-5 h-5" />
+          </button>
+          <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
+            <Share2 className="w-5 h-5" />
+          </a>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <a href={`tel:${repair.phoneNumber}`} className="flex items-center space-x-2 text-blue-600 hover:text-blue-700">
           <Phone className="w-5 h-5" />
           <span>{repair.phoneNumber}</span>
         </a>
-        <div className="flex items-center space-x-4">
-          <a
-            href={getWhatsAppLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-2 text-green-600 hover:text-green-700"
-          >
-            <Share2 className="w-5 h-5" />
-            <span>Send WhatsApp</span>
-          </a>
-          <button
-            onClick={handlePrint}
-            className="flex items-center space-x-2 text-gray-600 hover:text-gray-700"
-          >
-            <Printer className="w-5 h-5" />
-            <span>Print</span>
-          </button>
-        </div>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <label htmlFor="status" className="font-medium min-w-[80px]">
-            Status:
-          </label>
-          <select
-            id="status"
-            value={repair.status}
-            onChange={handleStatusChange}
-            className="w-full sm:w-auto border rounded-md p-2"
-          >
-            <option value="Open">Open</option>
-            <option value="Hold">Hold</option>
-            <option value="Notified">Notified</option>
-            <option value="Solved">Solved</option>
-          </select>
-        </div>
+      <div className="mt-4">
+        <label className="font-medium block mb-2">Customer Complaint:</label>
+        <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
+      </div>
 
-        <div className="mt-4">
-          <label className="font-medium block mb-2">
-            Customer Complaint:
-          </label>
-          <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
-        </div>
-
-        {repair.photo_url && (
-          <div className="mt-4">
-            <button
-              onClick={() => setShowImage(!showImage)}
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
-            >
-              <ImageIcon className="w-5 h-5" />
-              <span>{showImage ? 'Hide Image' : 'Show Image'}</span>
-            </button>
-            {showImage && imageUrl && (
-              <div className="mt-2">
-                <img 
-                  src={imageUrl} 
-                  alt="Repair photo" 
-                  className="w-full max-w-md rounded-lg shadow-sm"
-                />
-              </div>
-            )}
-          </div>
+      <div className="mt-4">
+        <label className="font-medium block mb-2">Technician Notes:</label>
+        {isEditing ? (
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="w-full border rounded-md p-2 min-h-[100px]"
+          />
+        ) : (
+          <p className="text-gray-600 whitespace-pre-wrap">{notes}</p>
         )}
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label htmlFor="notes" className="font-medium">
-              Technician Notes:
-            </label>
-            <button
-              onClick={() => {
-                if (isEditing) {
-                  handleNotesUpdate();
-                }
-                setIsEditing(!isEditing);
-              }}
-              className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 p-2"
-            >
-              <Edit2 className="w-4 h-4" />
-              <span>{isEditing ? 'Save' : 'Edit'}</span>
-            </button>
-          </div>
-          {isEditing ? (
-            <textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full border rounded-md p-2 min-h-[100px]"
-            />
-          ) : (
-            <p className="text-gray-600 whitespace-pre-wrap">{notes || 'No notes yet'}</p>
-          )}
-        </div>
       </div>
+
+      {showImage && imageUrl && (
+        <div className="mt-4">
+          <img src={imageUrl} alt="Repair photo" className="w-full max-w-md rounded-lg shadow-sm" />
+        </div>
+      )}
     </div>
   );
 
