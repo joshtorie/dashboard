@@ -4,7 +4,8 @@ import { toast } from 'react-hot-toast';
 import { useRepairStore } from '../store/repairStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { format } from 'date-fns';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseUrl } from '../lib/supabase';
+
 
 interface NewRepairModalProps {
   isOpen: boolean;
