@@ -18,21 +18,21 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const updateRepair = useRepairStore((state) => state.updateRepair);
 
   useEffect(() => {
-    if (repair.photoUrl && isExpanded) {
+    if (repair.photo_url && isExpanded) {
       getImageUrl();
     }
-  }, [repair.photoUrl, isExpanded]);
+  }, [repair.photo_url, isExpanded]);
 
   const getImageUrl = async () => {
-    if (!repair.photoUrl) {
-      console.log('No photoUrl present for repair:', repair.id);
+    if (!repair.photo_url) {
+      console.log('No photo_url present for repair:', repair.id);
       return;
     }
 
-    console.log('Fetching public URL for:', repair.photoUrl);
+    console.log('Fetching public URL for:', repair.photo_url);
     const { data } = await supabase.storage
       .from('repair-photos')
-      .getPublicUrl(repair.photoUrl);
+      .getPublicUrl(repair.photo_url);
 
     if (data?.publicUrl) {
       console.log('Retrieved public URL:', data.publicUrl);
@@ -43,11 +43,11 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const deleteImage = async () => {
-    if (!repair.photoUrl) return;
+    if (!repair.photo_url) return;
 
     const { error } = await supabase.storage
       .from('repair-photos')
-      .remove([repair.photoUrl]);
+      .remove([repair.photo_url]);
 
     if (error) {
       console.error('Error deleting image:', error);
@@ -58,13 +58,13 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as RepairCardType['status'];
     
-    if (newStatus === 'Solved' && repair.photoUrl) {
+    if (newStatus === 'Solved' && repair.photo_url) {
       await deleteImage();
     }
     
     await updateRepair(repair.id, { 
       status: newStatus,
-      photoUrl: newStatus === 'Solved' ? null : repair.photoUrl 
+      photo_url: newStatus === 'Solved' ? null : repair.photo_url 
     });
   };
 
@@ -221,7 +221,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
           <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
         </div>
 
-        {repair.photoUrl && imageUrl && (
+        {repair.photo_url && imageUrl && (
           <div className="mt-4">
             <label className="font-medium block mb-2">
               Repair Photo:

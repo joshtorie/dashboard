@@ -9,5 +9,5 @@ export interface RepairCard {
   status: RepairStatus;
   createdAt: string;
   updatedAt: string;
-  photoUrl?: string | null;
+  photo_url?: string | null;
 }

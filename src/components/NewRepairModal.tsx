@@ -198,12 +198,12 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         console.log('Image file exists, starting upload process');
         const fileName = await uploadImage(newRepair.id);
         if (fileName) {
-          console.log('Updating repair record with photoUrl:', fileName);
+          console.log('Updating repair record with photo_url:', fileName);
           try {
             const { data, error } = await supabase
               .from('repairs')
               .update({ 
-                photoUrl: fileName,
+                photo_url: fileName,
                 updatedAt: new Date().toISOString()
               })
               .eq('id', newRepair.id)
@@ -211,10 +211,10 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
               .single();
 
             if (error) {
-              console.error('Error updating repair with photoUrl:', error);
+              console.error('Error updating repair with photo_url:', error);
               toast.error('Failed to update repair with photo URL');
             } else {
-              console.log('Successfully updated repair with photoUrl:', data);
+              console.log('Successfully updated repair with photo_url:', data);
             }
           } catch (error) {
             console.error('Unexpected error updating repair:', error);
