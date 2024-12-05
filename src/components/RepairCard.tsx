@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer, Image as ImageIcon } from 'lucide-react';
+import { Phone, Share2, ChevronDown, ChevronUp, Printer, Image as ImageIcon } from 'lucide-react';
 import { RepairCard as RepairCardType } from '../types/repair';
 import { useRepairStore } from '../store/repairStore';
 import { supabase } from '../lib/supabase';
@@ -240,14 +240,13 @@ export default function RepairCard({ repair }: RepairCardProps) {
             id="status"
             value={repair.status}
             onChange={handleStatusChange}
-            className="w-full sm:w-auto border rounded-md p-2"
+            className="w-full sm:w-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="Open">Open</option>
             <option value="Hold">Hold</option>
             <option value="Notified">Notified</option>
             <option value="Solved">Solved</option>
           </select>
-          <Edit2 className="w-5 h-5" />
         </div>
       </div>
 
