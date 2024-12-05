@@ -140,6 +140,9 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             const file = new File([blob], 'repair-photo.jpg', { type: 'image/jpeg' });
             setImageFile(file);
             setImagePreview(URL.createObjectURL(blob));
+            console.log('Captured image file:', file); // Log the captured file
+          } else {
+            console.error('Blob creation failed.');
           }
         }, 'image/jpeg', 0.8);
       }
