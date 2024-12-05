@@ -38,13 +38,6 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <nav className="flex items-center space-x-4 sm:space-x-6 mx-auto">
-            {showHeaderIcon && (
-              <img
-                src="/logo.png"
-                alt="Archi Repairs"
-                className="h-8 w-auto mr-4"
-              />
-            )}
             <div className="group">
               <Tooltip text="New Repair">
                 <button
