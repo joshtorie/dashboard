@@ -57,20 +57,10 @@ export default function Header() {
             </div>
 
             {navItems.map((item) => (
-              <div key={item.path} className="group">
-                <Tooltip text={item.label}>
-                  <Link
-                    to={item.path}
-                    className={`p-2 rounded-lg transition-colors inline-flex items-center justify-center ${
-                      location.pathname === item.path
-                        ? 'text-blue-600 bg-blue-50'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    <item.icon className="w-6 h-6" />
-                  </Link>
-                </Tooltip>
-              </div>
+              <Link key={item.label} to={item.path} className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </Link>
             ))}
           </nav>
         </div>
