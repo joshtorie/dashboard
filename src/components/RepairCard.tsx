@@ -24,14 +24,21 @@ export default function RepairCard({ repair }: RepairCardProps) {
   }, [repair.photoUrl, isExpanded]);
 
   const getImageUrl = async () => {
-    if (!repair.photoUrl) return;
+    if (!repair.photoUrl) {
+      console.log('No photoUrl present for repair:', repair.id);
+      return;
+    }
 
+    console.log('Fetching public URL for:', repair.photoUrl);
     const { data } = await supabase.storage
       .from('repair-photos')
       .getPublicUrl(repair.photoUrl);
 
     if (data?.publicUrl) {
+      console.log('Retrieved public URL:', data.publicUrl);
       setImageUrl(data.publicUrl);
+    } else {
+      console.log('No public URL retrieved');
     }
   };
 

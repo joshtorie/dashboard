@@ -151,9 +151,14 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   };
 
   const uploadImage = async (repairId: string) => {
-    if (!imageFile) return null;
+    if (!imageFile) {
+      console.log('No image file present');
+      return null;
+    }
     
     const fileName = `${repairId}-photo.jpg`;
+    console.log('Attempting to upload image with filename:', fileName);
+    
     const { data, error } = await supabase.storage
       .from('repair-photos')
       .upload(fileName, imageFile);
@@ -164,6 +169,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       return null;
     }
 
+    console.log('Image uploaded successfully, returning filename:', fileName);
     return fileName;
   };
 
@@ -178,12 +184,21 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       });
 
       if (imageFile) {
+        console.log('Image file exists, starting upload process');
         const fileName = await uploadImage(newRepair.id);
         if (fileName) {
-          await supabase
+          console.log('Updating repair record with photoUrl:', fileName);
+          const { data, error } = await supabase
             .from('repairs')
             .update({ photoUrl: fileName })
-            .eq('id', newRepair.id);
+            .eq('id', newRepair.id)
+            .select();
+
+          if (error) {
+            console.error('Error updating repair with photoUrl:', error);
+          } else {
+            console.log('Successfully updated repair with photoUrl:', data);
+          }
         }
       }
 
