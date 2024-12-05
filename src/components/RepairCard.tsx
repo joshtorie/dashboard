@@ -28,6 +28,7 @@ const getStatusColor = (status: RepairCardType['status']) => {
 export default function RepairCard({ repair }: RepairCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [complaint, setComplaint] = useState(repair.complaint);
   const [notes, setNotes] = useState(repair.technicianNotes);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showImage, setShowImage] = useState(false);
@@ -85,7 +86,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const handleNotesUpdate = async () => {
-    await updateRepair(repair.id, { technicianNotes: notes });
+    await updateRepair(repair.id, { 
+      complaint: complaint,
+      technicianNotes: notes 
+    });
   };
 
   const getWhatsAppLink = () => {
@@ -206,20 +210,51 @@ export default function RepairCard({ repair }: RepairCardProps) {
 
       <div className="mt-4">
         <label className="font-medium block mb-2">Customer Complaint:</label>
-        <textarea
-          value={repair.complaint}
-          onChange={(e) => setNotes(e.target.value)}
-          className="w-full border rounded-md p-2 min-h-[100px]"
-        />
+        {isEditing ? (
+          <textarea
+            value={complaint}
+            onChange={(e) => setComplaint(e.target.value)}
+            className="w-full border rounded-md p-2 min-h-[100px]"
+          />
+        ) : (
+          <p className="text-gray-600 whitespace-pre-wrap">{complaint}</p>
+        )}
+        {isEditing && (
+          <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">Save</button>
+        )}
       </div>
 
       <div className="mt-4">
         <label className="font-medium block mb-2">Technician Notes:</label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className="w-full border rounded-md p-2 min-h-[100px]"
-        />
+        {isEditing ? (
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="w-full border rounded-md p-2 min-h-[100px]"
+          />
+        ) : (
+          <p className="text-gray-600 whitespace-pre-wrap">{notes}</p>
+        )}
+        {isEditing && (
+          <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">Save</button>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <div className="flex items-center space-x-4">
+          <label htmlFor="status" className="font-medium min-w-[80px]">Status:</label>
+          <select
+            id="status"
+            value={repair.status}
+            onChange={handleStatusChange}
+            className="w-full sm:w-auto border rounded-md p-2"
+          >
+            <option value="Open">Open</option>
+            <option value="Hold">Hold</option>
+            <option value="Notified">Notified</option>
+            <option value="Solved">Solved</option>
+          </select>
+        </div>
       </div>
 
       {showImage && imageUrl && (
