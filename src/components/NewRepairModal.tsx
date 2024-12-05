@@ -98,7 +98,6 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   const createRepair = useRepairStore((state) => state.createRepair);
 
   const startCamera = async () => {
-    if (showCamera) return; // Prevent starting the camera if it's already active
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
