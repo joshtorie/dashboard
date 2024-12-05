@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer } from 'lucide-react';
 import { RepairCard as RepairCardType } from '../types/repair';
 import { useRepairStore } from '../store/repairStore';
+import { supabase } from '../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 interface RepairCardProps {
   repair: RepairCardType;
@@ -12,10 +14,51 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(repair.technicianNotes);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const updateRepair = useRepairStore((state) => state.updateRepair);
 
+  useEffect(() => {
+    if (repair.photoUrl && isExpanded) {
+      getImageUrl();
+    }
+  }, [repair.photoUrl, isExpanded]);
+
+  const getImageUrl = async () => {
+    if (!repair.photoUrl) return;
+
+    const { data } = await supabase.storage
+      .from('repair-photos')
+      .getPublicUrl(repair.photoUrl);
+
+    if (data?.publicUrl) {
+      setImageUrl(data.publicUrl);
+    }
+  };
+
+  const deleteImage = async () => {
+    if (!repair.photoUrl) return;
+
+    const { error } = await supabase.storage
+      .from('repair-photos')
+      .remove([repair.photoUrl]);
+
+    if (error) {
+      console.error('Error deleting image:', error);
+      toast.error('Failed to delete image');
+    }
+  };
+
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    await updateRepair(repair.id, { status: e.target.value as RepairCardType['status'] });
+    const newStatus = e.target.value as RepairCardType['status'];
+    
+    if (newStatus === 'Solved' && repair.photoUrl) {
+      await deleteImage();
+    }
+    
+    await updateRepair(repair.id, { 
+      status: newStatus,
+      photoUrl: newStatus === 'Solved' ? null : repair.photoUrl 
+    });
   };
 
   const handleNotesUpdate = async () => {
@@ -170,6 +213,19 @@ export default function RepairCard({ repair }: RepairCardProps) {
           </label>
           <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
         </div>
+
+        {repair.photoUrl && imageUrl && (
+          <div className="mt-4">
+            <label className="font-medium block mb-2">
+              Repair Photo:
+            </label>
+            <img 
+              src={imageUrl} 
+              alt="Repair photo" 
+              className="w-full max-w-md rounded-lg shadow-sm"
+            />
+          </div>
+        )}
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">

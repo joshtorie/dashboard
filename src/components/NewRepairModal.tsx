@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { X, Camera } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRepairStore } from '../store/repairStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { format } from 'date-fns';
+import { supabase } from '../lib/supabase';
 
 interface NewRepairModalProps {
   isOpen: boolean;
@@ -88,9 +89,72 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     complaint: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [showCamera, setShowCamera] = useState(false);
   const { autoPrintEnabled } = useSettingsStore();
-
   const createRepair = useRepairStore((state) => state.createRepair);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+      }
+      setShowCamera(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      toast.error('Could not access camera');
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setShowCamera(false);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(videoRef.current, 0, 0);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const file = new File([blob], 'repair-photo.jpg', { type: 'image/jpeg' });
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(blob));
+          }
+        }, 'image/jpeg');
+      }
+      stopCamera();
+    }
+  };
+
+  const uploadImage = async (repairId: string) => {
+    if (!imageFile) return null;
+    
+    const fileName = `${repairId}-photo.jpg`;
+    const { data, error } = await supabase.storage
+      .from('repair-photos')
+      .upload(fileName, imageFile);
+
+    if (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+      return null;
+    }
+
+    return fileName;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,13 +165,25 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         status: 'Open',
         technicianNotes: '',
       });
+
+      if (imageFile) {
+        const fileName = await uploadImage(newRepair.id);
+        if (fileName) {
+          await supabase
+            .from('repairs')
+            .update({ photoUrl: fileName })
+            .eq('id', newRepair.id);
+        }
+      }
+
       toast.success('Repair ticket created successfully');
-      // Only print if auto-print is enabled
       if (autoPrintEnabled) {
         printRepairTicket(newRepair);
       }
       onClose();
       setFormData({ customerName: '', phoneNumber: '', complaint: '' });
+      setImagePreview(null);
+      setImageFile(null);
     } catch (error) {
       console.error('Error creating repair:', error);
       toast.error('Failed to create repair ticket');
@@ -178,6 +254,56 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block font-medium text-gray-700">
+              Photo
+            </label>
+            <div className="flex items-center space-x-4">
+              <button
+                type="button"
+                onClick={startCamera}
+                className="flex items-center space-x-2 px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-md"
+                disabled={showCamera}
+              >
+                <Camera className="w-5 h-5" />
+                <span>Take Photo</span>
+              </button>
+              {imagePreview && (
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+              )}
+            </div>
+            {showCamera && (
+              <div className="relative mt-4">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full rounded-lg"
+                />
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
+                  <button
+                    type="button"
+                    onClick={capturePhoto}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
+                    Capture
+                  </button>
+                  <button
+                    type="button"
+                    onClick={stopCamera}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
