@@ -164,6 +164,13 @@ export default function RepairCard({ repair }: RepairCardProps) {
           </select>
         </div>
 
+        <div className="mt-4">
+          <label className="font-medium block mb-2">
+            Customer Complaint:
+          </label>
+          <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
+        </div>
+
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label htmlFor="notes" className="font-medium">
