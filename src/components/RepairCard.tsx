@@ -194,20 +194,6 @@ export default function RepairCard({ repair }: RepairCardProps) {
           <h3 className="text-lg font-semibold">{repair.customerName}</h3>
           <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>{repair.status}</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700">
-            <ImageIcon className="w-5 h-5" />
-          </button>
-          <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700">
-            <Edit2 className="w-5 h-5" />
-          </button>
-          <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700">
-            <Printer className="w-5 h-5" />
-          </button>
-          <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
-            <Share2 className="w-5 h-5" />
-          </a>
-        </div>
       </div>
 
       <div className="mt-4">
@@ -219,20 +205,20 @@ export default function RepairCard({ repair }: RepairCardProps) {
 
       <div className="mt-4">
         <label className="font-medium block mb-2">Customer Complaint:</label>
-        <p className="text-gray-600 whitespace-pre-wrap">{repair.complaint}</p>
+        <textarea
+          value={repair.complaint}
+          onChange={(e) => setNotes(e.target.value)}
+          className="w-full border rounded-md p-2 min-h-[100px]"
+        />
       </div>
 
       <div className="mt-4">
         <label className="font-medium block mb-2">Technician Notes:</label>
-        {isEditing ? (
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full border rounded-md p-2 min-h-[100px]"
-          />
-        ) : (
-          <p className="text-gray-600 whitespace-pre-wrap">{notes}</p>
-        )}
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="w-full border rounded-md p-2 min-h-[100px]"
+        />
       </div>
 
       {showImage && imageUrl && (
@@ -240,6 +226,23 @@ export default function RepairCard({ repair }: RepairCardProps) {
           <img src={imageUrl} alt="Repair photo" className="w-full max-w-md rounded-lg shadow-sm" />
         </div>
       )}
+
+      <div className="flex items-center space-x-4 mt-4">
+        <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700">
+          <ImageIcon className="w-5 h-5" />
+          <span>{showImage ? 'Hide Image' : 'Show Image'}</span>
+        </button>
+        <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700">
+          <Edit2 className="w-5 h-5" />
+          <span>{isEditing ? 'Save' : 'Edit'}</span>
+        </button>
+        <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700">
+          <Printer className="w-5 h-5" />
+        </button>
+        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
+          <Share2 className="w-5 h-5" />
+        </a>
+      </div>
     </div>
   );
 
