@@ -134,7 +134,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
         <body>
           <div class="header">
             <h1>Repair Ticket #${repair.id}</h1>
-            <p>Created: ${format(new Date(repair.createdAt), 'PPp')}</p>
+            <p>Created: ${format(new Date(repair.createdAt), 'PP')}</p>
           </div>
           
           <div class="section">
@@ -172,6 +172,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
           <div className="flex items-center space-x-4">
             <h3 className="text-lg font-semibold">{repair.customerName}</h3>
             <span className="text-gray-600">{repair.id}</span>
+            <span className="text-gray-600">{format(new Date(repair.createdAt), 'PP')}</span>
             <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>
               {repair.status}
             </span>
