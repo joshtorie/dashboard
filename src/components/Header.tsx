@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { PlusCircle, Wrench, Archive, Search, LayoutDashboard, Settings } from 'lucide-react';
+import { PlusCircle, Wrench, Search, LayoutDashboard, Settings } from 'lucide-react';
 import NewRepairModal from './NewRepairModal';
 import { useSettingsStore } from '../store/settingsStore';
 
@@ -29,7 +29,6 @@ export default function Header() {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { icon: Wrench, label: 'Open Repairs', path: '/repairs' },
-    { icon: Archive, label: 'Archive', path: '/archive' },
     { icon: Search, label: 'Search', path: '/search' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];

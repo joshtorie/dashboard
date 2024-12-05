@@ -170,7 +170,8 @@ export default function RepairCard({ repair }: RepairCardProps) {
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-4">
-            <h3 className="text-lg font-semibold">{repair.customerName} (ID: {repair.id})</h3>
+            <h3 className="text-lg font-semibold">{repair.customerName}</h3>
+            <span className="text-gray-600">{repair.id}</span>
             <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>
               {repair.status}
             </span>
@@ -190,7 +191,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
     <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold">{repair.customerName} (ID: {repair.id})</h3>
+          <h3 className="text-lg font-semibold">{repair.customerName}</h3>
           <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>{repair.status}</span>
         </div>
         <div className="flex items-center space-x-2">
