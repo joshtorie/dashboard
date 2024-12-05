@@ -10,6 +10,21 @@ interface RepairCardProps {
   repair: RepairCardType;
 }
 
+const getStatusColor = (status: RepairCardType['status']) => {
+  switch (status) {
+    case 'Open':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'Hold':
+      return 'bg-red-100 text-red-800';
+    case 'Notified':
+      return 'bg-blue-100 text-blue-800';
+    case 'Solved':
+      return 'bg-green-100 text-green-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
+
 export default function RepairCard({ repair }: RepairCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -150,19 +165,27 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const minimizedContent = (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
-      <div>
-        <h3 className="font-medium">{repair.customerName}</h3>
-        <p className="text-sm text-gray-500">
-          {repair.id} - {format(new Date(repair.createdAt), 'PPp')}
-        </p>
+    <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <div className="flex items-center space-x-4">
+            <h3 className="text-lg font-semibold">{repair.customerName}</h3>
+            <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>
+              {repair.status}
+            </span>
+          </div>
+          <div className="flex items-center mt-2 text-gray-600">
+            <Phone className="w-4 h-4 mr-2" />
+            <span>{repair.phoneNumber}</span>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-2 hover:bg-gray-100 rounded self-end sm:self-center"
+        >
+          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        </button>
       </div>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="p-2 hover:bg-gray-100 rounded self-end sm:self-center"
-      >
-        {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-      </button>
     </div>
   );
 
