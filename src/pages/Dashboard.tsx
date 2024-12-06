@@ -48,6 +48,21 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {statusCards.map((card) => (
+          <div
+            key={card.englishStatus}
+            className={`${card.color} rounded-lg p-4 cursor-pointer`}
+            onClick={() => handleStatusCardClick(card.englishStatus)}
+          >
+            <h3 className="text-lg font-semibold">{card.status}</h3>
+            <p className="text-2xl font-bold mt-2">
+              {repairs.filter((repair) => repair.status === card.englishStatus).length}
+            </p>
+          </div>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {filteredRepairs.map((repair) => (
           <div key={repair.id}>
@@ -74,6 +89,12 @@ export default function Dashboard() {
                 <div>
                   <p className="font-medium">{repair.customerName}</p>
                   <p className="text-sm text-gray-500">{repair.id}</p>
+                </div>
+                <div className="flex items-center text-gray-500">
+                  <Clock className="w-4 h-4 mr-1" />
+                  <span>
+                    {differenceInHours(new Date(), new Date(repair.createdAt))} hours
+                  </span>
                 </div>
               </div>
             ))}
