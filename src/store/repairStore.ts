@@ -18,21 +18,27 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   error: null,
 
   fetchRepairs: async () => {
+    console.log('Starting fetchRepairs...');
     set({ loading: true, error: null });
     try {
+      console.log('Fetching from Supabase...');
       const { data, error } = await supabase
         .from('repairs')
         .select('*')
         .order('createdAt', { ascending: false });
 
+      console.log('Supabase response:', { data: data?.length || 0, error });
+
       if (error) throw error;
       if (!data) throw new Error('No repairs found');
 
-      set({ repairs: data });
+      set({ repairs: data, loading: false });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'An error occurred' });
-    } finally {
-      set({ loading: false });
+      console.error('Error in fetchRepairs:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'An error occurred',
+        loading: false 
+      });
     }
   },
 
@@ -65,13 +71,18 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       if (error) throw error;
       if (!data) throw new Error('Failed to create repair');
 
-      set(state => ({ repairs: [data, ...state.repairs] }));
+      set((state) => ({
+        repairs: [data, ...state.repairs],
+        loading: false,
+      }));
+
       return data;
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to create repair' });
+      set({ 
+        error: error instanceof Error ? error.message : 'An error occurred',
+        loading: false 
+      });
       throw error;
-    } finally {
-      set({ loading: false });
     }
   },
 
@@ -85,16 +96,18 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
       if (error) throw error;
 
-      set(state => ({
-        repairs: state.repairs.map(repair =>
+      set((state) => ({
+        repairs: state.repairs.map((repair) =>
           repair.id === id ? { ...repair, ...updates } : repair
         ),
+        loading: false,
       }));
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to update repair' });
+      set({ 
+        error: error instanceof Error ? error.message : 'An error occurred',
+        loading: false 
+      });
       throw error;
-    } finally {
-      set({ loading: false });
     }
   },
 

@@ -13,6 +13,7 @@ function App() {
   const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
   const loading = useRepairStore((state) => state.loading);
   const error = useRepairStore((state) => state.error);
+  const repairs = useRepairStore((state) => state.repairs);
 
   useEffect(() => {
     console.log('App mounted');
@@ -20,6 +21,7 @@ function App() {
       try {
         console.log('Fetching repairs...');
         await fetchRepairs();
+        console.log('Repairs fetched successfully:', repairs.length);
       } catch (err) {
         console.error('Failed to fetch repairs:', err);
       }
@@ -28,7 +30,9 @@ function App() {
     return () => {
       console.log('App unmounted');
     };
-  }, []); 
+  }, [fetchRepairs]); 
+
+  console.log('App render - loading:', loading, 'error:', error, 'repairs:', repairs?.length);
 
   if (loading) {
     return (
