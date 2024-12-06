@@ -98,37 +98,48 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   const createRepair = useRepairStore((state) => state.createRepair);
 
   useEffect(() => {
-    if (showCamera && videoRef.current) {
-      startCamera();
-    } else {
-      stopCamera();
-    }
+    // Only cleanup on unmount
     return () => {
-      stopCamera(); // Clean up the media stream on unmount
+      stopCamera();
     };
-  }, [showCamera, videoRef]);
+  }, []); // Empty dependency array
 
   const startCamera = async () => {
     try {
       console.log('Attempting to access camera...');
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true // Fallback to any available camera
+        video: true
       });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        await videoRef.current.play();
-        console.log('Video stream is active:', stream);
-      } else {
-        console.error('Video reference is null. Cannot set srcObject.');
-        return;
-      }
-      setShowCamera(true);
-      console.log('Camera access granted and video is playing.');
+      
+      // Wait for next render cycle to ensure video element exists
+      requestAnimationFrame(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          streamRef.current = stream;
+          videoRef.current.play()
+            .then(() => {
+              console.log('Video stream is active and playing');
+            })
+            .catch(error => {
+              console.error('Error playing video:', error);
+              toast.error('שגיאה בהפעלת המצלמה');
+            });
+        } else {
+          console.error('Video reference is null. Cannot set srcObject.');
+          stream.getTracks().forEach(track => track.stop());
+        }
+      });
     } catch (error) {
       console.error('Error accessing camera:', error);
       toast.error('לא ניתן לגשת למצלמה');
+      setShowCamera(false);
     }
+  };
+
+  const handleCameraStart = () => {
+    setShowCamera(true);
+    // Start camera in next render cycle
+    requestAnimationFrame(startCamera);
   };
 
   const stopCamera = () => {
@@ -327,7 +338,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             {!showCamera && !imagePreview && (
               <button
                 type="button"
-                onClick={() => setShowCamera(true)}
+                onClick={handleCameraStart}
                 className="flex items-center justify-center w-full p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
               >
                 <Camera className="w-5 h-5 ml-2" />
