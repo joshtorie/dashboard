@@ -6,6 +6,7 @@ interface RepairStore {
   repairs: RepairCard[];
   loading: boolean;
   error: string | null;
+  initialized: boolean;
   fetchRepairs: () => Promise<void>;
   createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<RepairCard>;
   updateRepair: (id: string, updates: Partial<RepairCard>) => Promise<void>;
@@ -16,8 +17,15 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   repairs: [],
   loading: false,
   error: null,
+  initialized: false,
 
   fetchRepairs: async () => {
+    const state = get();
+    if (state.loading || state.initialized) {
+      console.log('Skipping fetch - already loaded or loading');
+      return;
+    }
+
     console.log('Starting fetchRepairs...');
     set({ loading: true, error: null });
     try {
@@ -32,7 +40,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       if (error) throw error;
       if (!data) throw new Error('No repairs found');
 
-      set({ repairs: data, loading: false });
+      set({ repairs: data, loading: false, initialized: true });
     } catch (error) {
       console.error('Error in fetchRepairs:', error);
       set({ 

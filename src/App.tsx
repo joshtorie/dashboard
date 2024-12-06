@@ -14,27 +14,18 @@ function App() {
   const loading = useRepairStore((state) => state.loading);
   const error = useRepairStore((state) => state.error);
   const repairs = useRepairStore((state) => state.repairs);
+  const initialized = useRepairStore((state) => state.initialized);
 
   useEffect(() => {
-    console.log('App mounted');
-    const initializeApp = async () => {
-      try {
-        console.log('Fetching repairs...');
-        await fetchRepairs();
-        console.log('Repairs fetched successfully:', repairs.length);
-      } catch (err) {
-        console.error('Failed to fetch repairs:', err);
-      }
-    };
-    initializeApp();
-    return () => {
-      console.log('App unmounted');
-    };
-  }, []); 
+    if (!initialized) {
+      console.log('App mounted - initializing data');
+      fetchRepairs().catch(console.error);
+    }
+  }, [initialized]); // Only re-run if initialized changes
 
-  console.log('App render - loading:', loading, 'error:', error, 'repairs:', repairs?.length);
+  console.log('App render - loading:', loading, 'error:', error, 'repairs:', repairs?.length, 'initialized:', initialized);
 
-  if (loading) {
+  if (loading && !initialized) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
