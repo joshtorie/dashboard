@@ -24,7 +24,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">דשבורד</h1>
+      <div className="flex items-center mb-4">
+        <img src="https://github.com/joshtorie/dashboard/raw/main/logo.png" alt="Logo" className="h-10 w-auto mr-2" />
+        <h1 className="text-2xl font-bold text-gray-900">דשבורד</h1>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statusCards.map(({ status, color }) => (
