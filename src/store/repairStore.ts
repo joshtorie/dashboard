@@ -39,11 +39,13 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
       if (error) {
         console.error('Supabase error:', error);
-        throw error;
+        set({ error: 'Failed to fetch repairs. Please try again later.' }); 
+        return;
       }
 
       if (!data) {
         console.error('No data received from Supabase');
+        set({ error: 'No repairs found.' }); 
         return;
       }
 
@@ -58,7 +60,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       }
     } catch (error) {
       console.error('Error in fetchRepairs:', error);
-      set({ error: error.message });
+      set({ error: 'An unexpected error occurred. Please try again later.' }); 
     } finally {
       set({ loading: false });
     }
