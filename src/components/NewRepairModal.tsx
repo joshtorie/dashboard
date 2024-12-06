@@ -106,9 +106,11 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
   const startCamera = async () => {
     try {
-      console.log('Attempting to access camera...');
+      console.log('Attempting to access rear camera...');
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true
+        video: {
+          facingMode: { exact: "environment" } // This specifically requests the rear camera
+        }
       });
       
       // Wait for next render cycle to ensure video element exists
@@ -131,8 +133,37 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       });
     } catch (error) {
       console.error('Error accessing camera:', error);
-      toast.error('לא ניתן לגשת למצלמה');
-      setShowCamera(false);
+      // If exact "environment" fails, try without "exact" constraint
+      try {
+        console.log('Attempting to access camera with fallback options...');
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: {
+            facingMode: "environment" // Fallback to preferred rear camera
+          }
+        });
+        
+        requestAnimationFrame(() => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            streamRef.current = stream;
+            videoRef.current.play()
+              .then(() => {
+                console.log('Video stream is active and playing with fallback camera');
+              })
+              .catch(error => {
+                console.error('Error playing video:', error);
+                toast.error('שגיאה בהפעלת המצלמה');
+              });
+          } else {
+            console.error('Video reference is null. Cannot set srcObject.');
+            stream.getTracks().forEach(track => track.stop());
+          }
+        });
+      } catch (fallbackError) {
+        console.error('Error accessing fallback camera:', fallbackError);
+        toast.error('לא ניתן לגשת למצלמה');
+        setShowCamera(false);
+      }
     }
   };
 
