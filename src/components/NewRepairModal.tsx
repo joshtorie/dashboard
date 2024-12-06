@@ -99,6 +99,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
   const startCamera = async () => {
     try {
+      console.log('Attempting to access camera...');
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: { exact: 'environment' },
@@ -110,6 +111,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         await videoRef.current.play();
       }
       setShowCamera(true);
+      console.log('Camera access granted and video is playing.');
     } catch (error) {
       console.error('Error accessing camera:', error);
       toast.error('לא ניתן לגשת למצלמה');
@@ -135,6 +137,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(videoRef.current, 0, 0);
+        console.log('Image drawn on canvas.');
         canvas.toBlob((blob) => {
           if (blob) {
             const file = new File([blob], 'repair-photo.jpg', { type: 'image/jpeg' });
@@ -142,11 +145,15 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             setImagePreview(URL.createObjectURL(blob));
             console.log('Captured image file:', file); // Log the captured file
           } else {
-            console.error('Blob creation failed.');
+            console.error('Blob creation failed. Canvas size:', canvas.width, 'x', canvas.height);
           }
         }, 'image/jpeg', 0.8);
+      } else {
+        console.error('Failed to get canvas context.');
       }
       stopCamera();
+    } else {
+      console.error('Video reference is null.');
     }
   };
 
