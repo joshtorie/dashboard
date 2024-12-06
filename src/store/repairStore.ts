@@ -35,32 +35,22 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
       const { data, error } = await query;
 
-      console.log('Fetched data:', data);
-
       if (error) {
         console.error('Supabase error:', error);
-        set({ error: 'Failed to fetch repairs. Please try again later.' }); 
+        set({ error: 'Failed to fetch repairs. Please try again later.' });
         return;
       }
 
       if (!data) {
         console.error('No data received from Supabase');
-        set({ error: 'No repairs found.' }); 
+        set({ error: 'No repairs found.' });
         return;
       }
 
-      // Check if the fetched data is different from the current state
-      const currentRepairs = get().repairs;
-      console.log('Current repairs state before update:', currentRepairs);
-      if (data.length !== currentRepairs.length || !data.every((repair, index) => repair.id === currentRepairs[index].id)) {
-        set({ repairs: data });
-        console.log('Repairs state updated:', data);
-      } else {
-        console.log('No changes in repairs data, state not updated.');
-      }
+      set({ repairs: data });
     } catch (error) {
       console.error('Error in fetchRepairs:', error);
-      set({ error: 'An unexpected error occurred. Please try again later.' }); 
+      set({ error: 'An unexpected error occurred. Please try again later.' });
     } finally {
       set({ loading: false });
     }

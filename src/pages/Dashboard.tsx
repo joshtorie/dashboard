@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
@@ -6,8 +6,11 @@ import { differenceInHours } from 'date-fns';
 import { AlertCircle, Clock } from 'lucide-react';
 
 export default function Dashboard() {
-  const repairs = useRepairStore((state) => state.repairs);
-  const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
+  const { repairs, fetchRepairs } = useRepairStore(useCallback((state) => ({
+    repairs: state.repairs,
+    fetchRepairs: state.fetchRepairs
+  }), []));
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,11 +19,7 @@ export default function Dashboard() {
     return () => {
       console.log('Dashboard unmounted');
     };
-  }, []); // Ensured fetchRepairs is called only once
-
-  useEffect(() => {
-    console.log('Fetching repairs...');
-  }, []);
+  }, [fetchRepairs]);
 
   const handleStatusCardClick = (status: RepairStatus) => {
     navigate('/repairs');
