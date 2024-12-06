@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer, Image as ImageIcon } from 'lucide-react';
+import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer } from 'lucide-react';
 import { RepairCard as RepairCardType } from '../types/repair';
 import { useRepairStore } from '../store/repairStore';
 import { supabase } from '../lib/supabase';
@@ -40,7 +40,6 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showImage, setShowImage] = useState(false);
   const updateRepair = useRepairStore((state) => state.updateRepair);
-  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -67,270 +66,202 @@ export default function RepairCard({ repair }: RepairCardProps) {
     };
   }, [repair.photo_url, isExpanded]);
 
-  const handleImageClick = () => {
-    if (imageUrl) {
-      setShowImage(!showImage);
-    }
-  };
-
-  const deleteImage = async () => {
-    if (!repair.photo_url) return;
-
-    try {
-      const { error } = await supabase.storage
-        .from('repair-photos')
-        .remove([repair.photo_url]);
-
-      if (error) throw error;
-
-      await updateRepair(repair.id, { photo_url: null });
-      setImageUrl(null);
-      setShowImage(false);
-      toast.success('התמונה נמחקה בהצלחה');
-    } catch (error) {
-      console.error('Error deleting image:', error);
-      toast.error('שגיאה במחיקת התמונה');
-    }
-  };
-
-  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newStatus = e.target.value as RepairCardType['status'];
-    
-    if (newStatus === 'Solved' && repair.photo_url) {
-      await deleteImage();
-    }
-    
-    await updateRepair(repair.id, { 
-      status: newStatus,
-      photo_url: newStatus === 'Solved' ? null : repair.photo_url 
-    });
-  };
-
   const handleNotesUpdate = async () => {
-    await updateRepair(repair.id, { 
-      complaint: complaint,
-      technicianNotes: notes 
-    });
+    try {
+      await updateRepair(repair.id, {
+        complaint,
+        technicianNotes: notes
+      });
+      setIsEditing(false);
+      toast.success('עודכן בהצלחה');
+    } catch (error) {
+      toast.error('שגיאה בעדכון');
+    }
   };
 
-  const getWhatsAppLink = () => {
-    const message = encodeURIComponent('התיקון שלך מוכן! אנא בוא/י לאסוף אותו');
-    const phone = `972${repair.phoneNumber.replace(/\D/g, '')}`;
-    return `https://wa.me/${phone}?text=${message}`;
+  const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newStatus = event.target.value as RepairCardType['status'];
+    try {
+      await updateRepair(repair.id, { status: newStatus });
+      toast.success('הסטטוס עודכן בהצלחה');
+    } catch (error) {
+      toast.error('שגיאה בעדכון הסטטוס');
+    }
+  };
+
+  const handleShareClick = async () => {
+    try {
+      await navigator.share({
+        title: `תיקון ${repair.id}`,
+        text: `פרטי תיקון:\nשם: ${repair.customerName}\nטלפון: ${repair.phoneNumber}\nתלונה: ${repair.complaint}`
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
   };
 
   const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
-
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Repair Ticket #${repair.id}</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              padding: 20px;
-              max-width: 800px;
-              margin: 0 auto;
-            }
-            .header {
-              text-align: center;
-              margin-bottom: 20px;
-              padding-bottom: 20px;
-              border-bottom: 1px solid #ccc;
-            }
-            .section {
-              margin-bottom: 20px;
-            }
-            .label {
-              font-weight: bold;
-              margin-right: 10px;
-            }
-            @media print {
-              body {
-                padding: 0;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>פניה #${repair.id}</h1>
-            <p>Created: ${format(new Date(repair.createdAt), 'PP')}</p>
-          </div>
-          
-          <div class="section">
-            <p><span class="label">שם:</span> ${repair.customerName}</p>
-            <p><span class="label">םלפון:</span> ${repair.phoneNumber}</p>
-            <p><span class="label">סטטוס:</span> ${repair.status}</p>
-          </div>
-
-          <div class="section">
-            <h2>תיעור</h2>
-            <p>${repair.complaint}</p>
-          </div>
-
-          <div class="section">
-            <h2>הערות</h2>
-            <p>${repair.technicianNotes || 'No notes yet'}</p>
-          </div>
-        </body>
-      </html>
+    const printContent = `
+      תיקון מספר: ${repair.id}
+      שם לקוח: ${repair.customerName}
+      טלפון: ${repair.phoneNumber}
+      תלונה: ${repair.complaint}
+      הערות טכנאי: ${repair.technicianNotes}
+      סטטוס: ${statusTranslations[repair.status]}
+      תאריך: ${format(new Date(repair.createdAt), "dd/MM/yyyy HH:mm")}
     `;
 
-    printWindow.document.write(html);
+    const printWindow = window.open('', '', 'height=600,width=800');
+    if (!printWindow) return;
+
+    printWindow.document.write('<html><head><title>הדפסת תיקון</title>');
+    printWindow.document.write('<style>body { font-family: Arial; direction: rtl; }</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<pre>' + printContent + '</pre>');
+    printWindow.document.write('</body></html>');
     printWindow.document.close();
-    printWindow.onload = () => {
-      printWindow.print();
-      // Uncomment the next line if you want the print window to close after printing
-      // printWindow.close();
-    };
+    printWindow.print();
   };
 
-  const minimizedContent = (
-    <div className="p-4">
-      {/* Row 1: Customer Name and ID */}
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex-1">
-          <h3 className="text-lg font-medium text-gray-900">{repair.customerName}</h3>
-          <span className="text-sm text-gray-500 ml-2">#{repair.id}</span>
-        </div>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 text-gray-400 hover:text-gray-600"
-        >
-          {isExpanded ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </button>
-      </div>
-
-      {/* Row 2: Date and Status */}
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          {format(new Date(repair.createdAt), "EEEE, d MMMM, HH:mm")}
-        </div>
-        <div className={`px-2 py-1 rounded-full text-sm ${getStatusColor(repair.status)}`}>
-          {statusTranslations[repair.status]}
-        </div>
-      </div>
-    </div>
-  );
-
-  const expandedContent = (
-    <div className="p-4">
-      <div className="mt-4">
-        <a href={`tel:${repair.phoneNumber}`} className="flex items-center space-x-2 space-x-reverse text-blue-600 hover:text-blue-700">
-          <Phone className="w-5 h-5" />
-          <span>{repair.phoneNumber}</span>
-        </a>
-      </div>
-
-      <div className="mt-4">
-        <label className="font-medium block mb-2">תלונת לקוח:</label>
-        {isEditing ? (
-          <textarea
-            value={complaint}
-            onChange={(e) => setComplaint(e.target.value)}
-            className="w-full border rounded-md p-2 min-h-[100px]"
-          />
-        ) : (
-          <p className="text-gray-600 whitespace-pre-wrap border rounded-md p-3">{complaint}</p>
-        )}
-        {isEditing && (
-          <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">שמור</button>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <label className="font-medium block mb-2">הערות טכנאי:</label>
-        {isEditing ? (
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full border rounded-md p-2 min-h-[100px]"
-          />
-        ) : (
-          <p className="text-gray-600 whitespace-pre-wrap border rounded-md p-3">{notes}</p>
-        )}
-        {isEditing && (
-          <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">שמור</button>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <select
-          id="status"
-          value={repair.status}
-          onChange={handleStatusChange}
-          className="w-full sm:w-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {Object.entries(statusTranslations).map(([status, translation]) => (
-            <option key={status} value={status}>{translation}</option>
-          ))}
-        </select>
-      </div>
-
-      {isExpanded && repair.photo_url && (
-        <div className="mt-4">
-          <div className="flex items-center justify-between">
-            <label className="font-medium">תמונה:</label>
-            <button
-              onClick={deleteImage}
-              className="text-red-600 hover:text-red-700 text-sm"
-            >
-              מחק תמונה
-            </button>
+  return (
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="p-4">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="text-lg font-medium">{repair.customerName}</h3>
+            <p className="text-gray-500">{repair.id}</p>
           </div>
-          {imageUrl && (
-            <div className="relative mt-2">
-              <img
-                ref={imageRef}
-                src={imageUrl}
-                alt="תמונת תיקון"
-                className="w-full h-48 object-cover rounded-lg cursor-pointer"
-                onClick={handleImageClick}
-              />
-              {showImage && (
-                <div 
-                  className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-                  onClick={() => setShowImage(false)}
-                >
-                  <img
-                    src={imageUrl}
-                    alt="תמונת תיקון מוגדלת"
-                    className="max-w-full max-h-full object-contain p-4"
-                  />
-                </div>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            {isExpanded ? <ChevronUp /> : <ChevronDown />}
+          </button>
+        </div>
+
+        <div className="mt-2 flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            {format(new Date(repair.createdAt), "EEEE, d MMMM, HH:mm")}
+          </div>
+          <div className={`px-2 py-1 rounded-full text-sm ${getStatusColor(repair.status)}`}>
+            {statusTranslations[repair.status]}
+          </div>
+        </div>
+
+        {isExpanded && (
+          <div className="mt-4 space-y-4">
+            <div>
+              <a
+                href={`tel:${repair.phoneNumber}`}
+                className="flex items-center space-x-2 space-x-reverse text-blue-600 hover:text-blue-700"
+              >
+                <Phone className="w-5 h-5" />
+                <span>{repair.phoneNumber}</span>
+              </a>
+            </div>
+
+            <div>
+              <label className="font-medium block mb-2">תלונת לקוח:</label>
+              {isEditing ? (
+                <textarea
+                  value={complaint}
+                  onChange={(e) => setComplaint(e.target.value)}
+                  className="w-full border rounded-md p-2 min-h-[100px]"
+                />
+              ) : (
+                <p className="text-gray-600 whitespace-pre-wrap border rounded-md p-3">
+                  {complaint}
+                </p>
               )}
             </div>
-          )}
-        </div>
-      )}
 
-      <div className="flex items-center justify-between mt-4 space-x-4 space-x-reverse">
-        <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700 w-full">
-          <Edit2 className="w-5 h-5 mx-auto" />
-        </button>
-        <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700 w-full">
-          <Printer className="w-5 h-5 mx-auto" />
-        </button>
-        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 w-full">
-          <Share2 className="w-5 h-5 mx-auto" />
-        </a>
+            <div>
+              <label className="font-medium block mb-2">הערות טכנאי:</label>
+              {isEditing ? (
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full border rounded-md p-2 min-h-[100px]"
+                />
+              ) : (
+                <p className="text-gray-600 whitespace-pre-wrap border rounded-md p-3">
+                  {notes}
+                </p>
+              )}
+            </div>
+
+            {isEditing && (
+              <button
+                onClick={handleNotesUpdate}
+                className="w-full bg-blue-600 text-white rounded-md px-4 py-2"
+              >
+                שמור
+              </button>
+            )}
+
+            <div>
+              <label className="font-medium block mb-2">סטטוס:</label>
+              <select
+                value={repair.status}
+                onChange={handleStatusChange}
+                className="w-full border rounded-md p-2"
+              >
+                {Object.entries(statusTranslations).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {repair.photo_url && imageUrl && (
+              <div>
+                <label className="font-medium block mb-2">תמונה:</label>
+                <img
+                  src={imageUrl}
+                  alt="תמונת תיקון"
+                  className="w-full h-48 object-cover rounded-lg cursor-pointer"
+                  onClick={() => setShowImage(true)}
+                />
+              </div>
+            )}
+
+            {showImage && imageUrl && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+                onClick={() => setShowImage(false)}
+              >
+                <img
+                  src={imageUrl}
+                  alt="תמונת תיקון מוגדלת"
+                  className="max-w-full max-h-full object-contain p-4"
+                />
+              </div>
+            )}
+
+            <div className="flex justify-around border-t pt-4">
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <Edit2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleShareClick}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handlePrint}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <Printer className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  );
-
-  return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
-      {minimizedContent}
-      {isExpanded && expandedContent}
     </div>
   );
 }
