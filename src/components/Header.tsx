@@ -42,9 +42,9 @@ export default function Header() {
               <Tooltip text="תיקון חדש">
                 <button
                   onClick={() => setIsNewRepairOpen(true)}
-                  className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors flex items-center"
                 >
-                  <PlusCircle className="w-6 h-6" />
+                  <PlusCircle className="w-6 h-6 align-middle" />
                 </button>
               </Tooltip>
             </div>
@@ -53,7 +53,7 @@ export default function Header() {
 
             {navItems.map((item) => (
               <Link key={item.path} to={item.path} className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-800">
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-5 h-5 align-middle" />
               </Link>
             ))}
           </nav>
