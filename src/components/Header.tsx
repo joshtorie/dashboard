@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { PlusCircle, Wrench, Search, LayoutDashboard, Settings, Clipboard } from 'lucide-react';
 import NewRepairModal from './NewRepairModal';
-import { useSettingsStore } from '../store/settingsStore';
 
 interface TooltipProps {
   text: string;
@@ -24,7 +23,6 @@ const Tooltip: React.FC<TooltipProps> = ({ text, children }) => (
 export default function Header() {
   const [isNewRepairOpen, setIsNewRepairOpen] = React.useState(false);
   const location = useLocation();
-  const showHeaderIcon = useSettingsStore((state) => state.showHeaderIcon);
 
   const navItems = [
     { icon: Clipboard, path: '/repairs' }, 
@@ -71,9 +69,6 @@ export default function Header() {
               );
             })}
           </nav>
-          {showHeaderIcon && (
-            {/* <img src="/logo.png" alt="Logo" className="h-8 w-auto" /> */}
-          )}
         </div>
       </div>
       <NewRepairModal isOpen={isNewRepairOpen} onClose={() => setIsNewRepairOpen(false)} />
