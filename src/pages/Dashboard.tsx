@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
@@ -11,9 +11,8 @@ export default function Dashboard() {
   const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
   const navigate = useNavigate();
 
-  const fetchRepairsRef = useRef(fetchRepairs);
   useEffect(() => {
-    fetchRepairsRef.current();
+    fetchRepairs();
   }, []);
 
   const getStatusCount = (status: RepairStatus) =>
