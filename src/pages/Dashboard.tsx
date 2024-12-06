@@ -14,10 +14,7 @@ export default function Dashboard() {
   useEffect(() => {
     console.log('Dashboard mounted');
     fetchRepairs();
-    return () => {
-      console.log('Dashboard unmounted');
-    };
-  }, []);
+  }, []); // Ensured fetchRepairs is called only once
 
   const getStatusCount = (status: RepairStatus) =>
     repairs.filter((repair) => repair.status === status).length;
