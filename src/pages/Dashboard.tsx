@@ -4,14 +4,12 @@ import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
 import { differenceInHours } from 'date-fns';
 import { AlertCircle, Clock } from 'lucide-react';
+import shallow from 'zustand/shallow';
 
 export default function Dashboard() {
-  const { repairs, fetchRepairs } = useRepairStore(useCallback((state) => ({
-    repairs: state.repairs,
-    fetchRepairs: state.fetchRepairs
-  }), []));
-  
   const navigate = useNavigate();
+  const repairs = useRepairStore(useCallback(state => state.repairs, shallow));
+  const fetchRepairs = useRepairStore(useCallback(state => state.fetchRepairs, []));
 
   useEffect(() => {
     console.log('Dashboard mounted');
@@ -36,8 +34,6 @@ export default function Dashboard() {
     { status: 'תקוע', englishStatus: 'Hold' as RepairStatus, color: 'bg-red-100 text-red-800' },
     { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatus, color: 'bg-blue-100 text-blue-800' },
   ];
-
-  const filteredRepairs = repairs;
 
   return (
     <div className="space-y-6">
@@ -64,7 +60,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {filteredRepairs.map((repair) => (
+        {repairs.map((repair) => (
           <div key={repair.id}>
             <p className="font-medium">{repair.customerName}</p>
             <p className="text-sm text-gray-500">{repair.id}</p>
