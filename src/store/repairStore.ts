@@ -10,9 +10,10 @@ interface RepairStore {
   createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<RepairCard>;
   updateRepair: (id: string, updates: Partial<RepairCard>) => Promise<void>;
   updateStatus: (id: string, status: RepairStatus) => Promise<void>;
+  getStatusCount: (status: RepairStatus) => number;
 }
 
-export const useRepairStore = create<RepairStore>((set) => ({
+export const useRepairStore = create<RepairStore>((set, get) => ({
   repairs: [],
   loading: false,
   error: null,
@@ -100,5 +101,9 @@ export const useRepairStore = create<RepairStore>((set) => ({
 
   updateStatus: async (id, status) => {
     return useRepairStore.getState().updateRepair(id, { status });
+  },
+
+  getStatusCount: (status: RepairStatus) => {
+    return get().repairs.filter(repair => repair.status === status).length;
   },
 }));
