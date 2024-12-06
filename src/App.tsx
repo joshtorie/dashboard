@@ -28,7 +28,7 @@ function App() {
     return () => {
       console.log('App unmounted');
     };
-  }, [fetchRepairs]);
+  }, []); 
 
   if (loading) {
     return (
@@ -45,7 +45,7 @@ function App() {
           <h2 className="text-xl font-bold mb-2">Error Loading Application</h2>
           <p>{error}</p>
         </div>
-    </div>
+      </div>
     );
   }
 
