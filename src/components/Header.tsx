@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { PlusCircle, Wrench, Search, LayoutDashboard, Settings } from 'lucide-react';
+import { PlusCircle, Wrench, Search, LayoutDashboard, Settings, Clipboard } from 'lucide-react';
 import NewRepairModal from './NewRepairModal';
 import { useSettingsStore } from '../store/settingsStore';
 
@@ -27,10 +27,11 @@ export default function Header() {
   const showHeaderIcon = useSettingsStore((state) => state.showHeaderIcon);
 
   const navItems = [
-    { icon: LayoutDashboard, path: '/' },
-    { icon: Wrench, path: '/repairs' },
-    { icon: Search, path: '/search' },
-    { icon: Settings, path: '/settings' },
+    { icon: PlusCircle, path: '/', label: 'תיקון חדש' },
+    { icon: Clipboard, path: '/repairs', label: 'תיקונים פתוחים' },
+    { icon: Search, path: '/search', label: 'חיפוש' },
+    { icon: LayoutDashboard, path: '/', label: 'לוח בקרה' },
+    { icon: Settings, path: '/settings', label: 'הגדרות' },
   ];
 
   return (
@@ -49,7 +50,9 @@ export default function Header() {
               </Tooltip>
             </div>
 
-            {navItems.map((item) => (
+            <div className="mx-2" /> {/* Space after the first icon */}
+
+            {navItems.map((item, index) => (
               <Link key={item.label} to={item.path} className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-800">
                 <item.icon className="w-5 h-5" />
                 <span>{item.label}</span>
