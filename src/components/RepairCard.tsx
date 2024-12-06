@@ -25,6 +25,13 @@ const getStatusColor = (status: RepairCardType['status']) => {
   }
 };
 
+const statusTranslations = {
+  'Open': 'פתוח',
+  'Hold': 'בהמתנה',
+  'Notified': 'נשלחה הודעה',
+  'Solved': 'טופל'
+};
+
 export default function RepairCard({ repair }: RepairCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -93,7 +100,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const getWhatsAppLink = () => {
-    const message = encodeURIComponent('Your repair is finished! Please come pick it up');
+    const message = encodeURIComponent('התיקון שלך מוכן! אנא בוא/י לאסוף אותו');
     const phone = `972${repair.phoneNumber.replace(/\D/g, '')}`;
     return `https://wa.me/${phone}?text=${message}`;
   };
@@ -169,114 +176,131 @@ export default function RepairCard({ repair }: RepairCardProps) {
     };
   };
 
-  const minimizedContent = (
-    <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-4">
-            <h3 className="text-lg font-semibold">{repair.customerName}</h3>
-            <span className="text-gray-600">{repair.id}</span>
-            <span className="text-gray-600">{format(new Date(repair.createdAt), 'PP')}</span>
-            <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>
-              {repair.status}
+  return (
+    <div className="bg-white shadow rounded-lg p-6 dir-rtl" dir="rtl">
+      <div className="flex justify-between items-start">
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2 space-x-reverse">
+            <span className="font-medium text-gray-900">#{repair.id}</span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(repair.status)}`}>
+              {statusTranslations[repair.status]}
             </span>
           </div>
+          <p className="text-sm text-gray-500">
+            {format(new Date(repair.createdAt), 'dd/MM/yyyy')}
+          </p>
         </div>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 hover:bg-gray-100 rounded self-end sm:self-center"
-        >
-          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
-      </div>
-    </div>
-  );
-
-  const expandedContent = (
-    <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-      <div className="mt-4">
-        <a href={`tel:${repair.phoneNumber}`} className="flex items-center space-x-2 text-blue-600 hover:text-blue-700">
-          <Phone className="w-5 h-5" />
-          <span>{repair.phoneNumber}</span>
-        </a>
-      </div>
-
-      <div className="mt-4">
-        <label className="font-medium block mb-2">Customer Complaint:</label>
-        {isEditing ? (
-          <textarea
-            value={complaint}
-            onChange={(e) => setComplaint(e.target.value)}
-            className="w-full border rounded-md p-2 min-h-[100px]"
-          />
-        ) : (
-          <p className="text-gray-600 whitespace-pre-wrap">{complaint}</p>
-        )}
-        {isEditing && (
-          <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">Save</button>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <label className="font-medium block mb-2">Technician Notes:</label>
-        {isEditing ? (
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full border rounded-md p-2 min-h-[100px]"
-          />
-        ) : (
-          <p className="text-gray-600 whitespace-pre-wrap">{notes}</p>
-        )}
-        {isEditing && (
-          <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">Save</button>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <div className="flex items-center space-x-4">
-          <label htmlFor="status" className="font-medium min-w-[80px]">Status:</label>
-          <select
-            id="status"
-            value={repair.status}
-            onChange={handleStatusChange}
-            className="w-full sm:w-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <div className="flex items-center space-x-2 space-x-reverse">
+          <a
+            href={getWhatsAppLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 text-gray-400 hover:text-gray-500"
           >
-            <option value="Open">Open</option>
-            <option value="Hold">Hold</option>
-            <option value="Notified">Notified</option>
-            <option value="Solved">Solved</option>
-          </select>
+            <Phone className="h-5 w-5" />
+          </a>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-2 text-gray-400 hover:text-gray-500"
+          >
+            {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+          </button>
         </div>
       </div>
 
-      {showImage && imageUrl && (
-        <div className="mt-4">
-          <img src={imageUrl} alt="Repair photo" className="w-full max-w-md rounded-lg shadow-sm" />
+      {isExpanded && (
+        <div className="mt-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">תלונה</label>
+            {isEditing ? (
+              <textarea
+                value={complaint}
+                onChange={(e) => setComplaint(e.target.value)}
+                className="w-full p-2 border rounded-md"
+                rows={3}
+              />
+            ) : (
+              <p className="text-gray-600">{complaint}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">הערות טכנאי</label>
+            {isEditing ? (
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full p-2 border rounded-md"
+                rows={3}
+              />
+            ) : (
+              <p className="text-gray-600">{notes}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">סטטוס</label>
+            <select
+              value={repair.status}
+              onChange={handleStatusChange}
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            >
+              {Object.entries(statusTranslations).map(([status, translation]) => (
+                <option key={status} value={status}>{translation}</option>
+              ))}
+            </select>
+          </div>
+
+          {repair.photo_url && (
+            <div>
+              <button
+                onClick={() => setShowImage(!showImage)}
+                className="flex items-center text-blue-600 hover:text-blue-700"
+              >
+                <ImageIcon className="h-4 w-4 ml-2" />
+                <span>{showImage ? 'הסתר תמונה' : 'הצג תמונה'}</span>
+              </button>
+              {showImage && imageUrl && (
+                <img src={imageUrl} alt="תמונת תיקון" className="mt-2 max-w-full h-auto rounded-lg" />
+              )}
+            </div>
+          )}
+
+          <div className="flex justify-end space-x-2 space-x-reverse">
+            {isEditing ? (
+              <>
+                <button
+                  onClick={() => {
+                    handleNotesUpdate();
+                    setIsEditing(false);
+                  }}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  שמור
+                </button>
+                <button
+                  onClick={() => {
+                    setComplaint(repair.complaint);
+                    setNotes(repair.technicianNotes);
+                    setIsEditing(false);
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                >
+                  בטל
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="flex items-center px-4 py-2 text-gray-700 hover:text-gray-900"
+              >
+                <Edit2 className="h-4 w-4 ml-2" />
+                ערוך
+              </button>
+            )}
+          </div>
         </div>
       )}
-
-      <div className="flex items-center justify-between mt-4 space-x-4">
-        <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700 w-full">
-          <ImageIcon className="w-5 h-5 mx-auto" />
-        </button>
-        <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700 w-full">
-          <Edit2 className="w-5 h-5 mx-auto" />
-        </button>
-        <button onClick={handlePrint} className="text-blue-600 hover:text-blue-700 w-full">
-          <Printer className="w-5 h-5 mx-auto" />
-        </button>
-        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 w-full">
-          <Share2 className="w-5 h-5 mx-auto" />
-        </a>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="bg-white rounded-lg shadow p-4 mb-4">
-      {minimizedContent}
-      {isExpanded && expandedContent}
     </div>
   );
 }

@@ -18,18 +18,18 @@ export default function OpenRepairs() {
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 text-red-600 rounded-lg">
-        Error loading repairs: {error}
+      <div className="p-4 bg-red-50 text-red-600 rounded-lg" dir="rtl">
+        שגיאה בטעינת התיקונים: {error}
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">פניות פתוחות</h1>
+    <div className="space-y-6" dir="rtl">
+      <h1 className="text-2xl font-bold text-gray-900">תיקונים פתוחים</h1>
       
       {openRepairs.length === 0 ? (
-        <p className="text-gray-500">No open repairs</p>
+        <p className="text-gray-500">אין תיקונים פתוחים</p>
       ) : (
         <div className="space-y-4">
           {openRepairs.map((repair) => (
