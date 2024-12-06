@@ -177,30 +177,39 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const minimizedContent = (
-    <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow" dir="rtl">
-      <div className="flex items-center justify-between">
+    <div className="p-4">
+      {/* Row 1: Customer Name and ID */}
+      <div className="flex justify-between items-center mb-2">
         <div className="flex-1">
-          <div className="flex items-center space-x-4 space-x-reverse">
-            <h3 className="text-lg font-semibold">{repair.customerName}</h3>
-            <span className="text-gray-600">#{repair.id}</span>
-            <span className="text-gray-600">{format(new Date(repair.createdAt), 'PP')}</span>
-            <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(repair.status)}`}>
-              {statusTranslations[repair.status]}
-            </span>
-          </div>
+          <h3 className="text-lg font-medium text-gray-900">{repair.customerName}</h3>
+          <span className="text-sm text-gray-500 ml-2">#{repair.id}</span>
         </div>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 hover:bg-gray-100 rounded self-end sm:self-center"
+          className="p-2 text-gray-400 hover:text-gray-600"
         >
-          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          {isExpanded ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </button>
+      </div>
+
+      {/* Row 2: Date and Status */}
+      <div className="flex justify-between items-center">
+        <div className="text-sm text-gray-500">
+          {format(new Date(repair.createdAt), "EEEE, d MMMM, HH:mm")}
+        </div>
+        <div className={`px-2 py-1 rounded-full text-sm ${getStatusColor(repair.status)}`}>
+          {statusTranslations[repair.status]}
+        </div>
       </div>
     </div>
   );
 
   const expandedContent = (
-    <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow" dir="rtl">
+    <div className="p-4">
       <div className="mt-4">
         <a href={`tel:${repair.phoneNumber}`} className="flex items-center space-x-2 space-x-reverse text-blue-600 hover:text-blue-700">
           <Phone className="w-5 h-5" />
@@ -277,7 +286,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-4" dir="rtl">
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
       {minimizedContent}
       {isExpanded && expandedContent}
     </div>
