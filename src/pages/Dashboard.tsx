@@ -34,9 +34,6 @@ export default function Dashboard() {
             onClick={() => navigate('/repairs')}
           >
             <h3 className="text-lg font-semibold">{card.status}</h3>
-            <p className="text-2xl font-bold mt-2">
-              {repairs.filter(repair => repair.status === card.englishStatus).length}
-            </p>
           </div>
         ))}
       </div>
