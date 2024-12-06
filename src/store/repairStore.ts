@@ -26,30 +26,28 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       console.log('Fetching repairs from Supabase...');
-      const { data, error } = await supabase
-        .from('repairs')
-        .select('*')
-        .order('createdAt', { ascending: false })
-        .eq('status', get().statusFilter);
+      const query = supabase.from('repairs').select('*').order('createdAt', { ascending: false });
+
+      // Apply status filter only if it exists
+      if (get().statusFilter) {
+        query.eq('status', get().statusFilter);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('Supabase error:', error);
         throw error;
       }
-      
+
       if (!data) {
         console.error('No data received from Supabase');
-        throw new Error('לא התקבלו נתונים מהמסד נתונים');
+        return;
       }
-      
-      console.log('Received repairs:', data);
+
       set({ repairs: data });
     } catch (error) {
-      console.error('פרטי השגיאה:', {
-        error,
-        message: error instanceof Error ? error.message : 'שגיאה לא ידועה'
-      });
-      set({ error: error instanceof Error ? error.message : 'שגיאה בטעינת התיקונים' });
+      set({ error: error.message });
     } finally {
       set({ loading: false });
     }
