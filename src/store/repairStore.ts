@@ -52,7 +52,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       // Check if the fetched data is different from the current state
       const currentRepairs = get().repairs;
       console.log('Current repairs state before update:', currentRepairs);
-      if (JSON.stringify(data) !== JSON.stringify(currentRepairs)) {
+      if (data.length !== currentRepairs.length || !data.every((repair, index) => repair.id === currentRepairs[index].id)) {
         set({ repairs: data });
         console.log('Repairs state updated:', data);
       } else {
