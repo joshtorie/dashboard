@@ -101,14 +101,15 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     try {
       console.log('Attempting to access camera...');
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: { exact: 'environment' },
-        } 
+        video: true // Fallback to any available camera
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
         await videoRef.current.play();
+        console.log('Video stream is active:', stream);
+      } else {
+        console.error('Video reference is null.');
       }
       setShowCamera(true);
       console.log('Camera access granted and video is playing.');
