@@ -111,17 +111,18 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   const startCamera = async () => {
     try {
       console.log('Attempting to access camera...');
-      if (!videoRef.current) {
-        console.error('Video reference is not available.');
-        return;
-      }
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: true // Fallback to any available camera
       });
-      videoRef.current.srcObject = stream;
-      streamRef.current = stream;
-      await videoRef.current.play();
-      console.log('Video stream is active:', stream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        await videoRef.current.play();
+        console.log('Video stream is active:', stream);
+      } else {
+        console.error('Video reference is null. Cannot set srcObject.');
+        return;
+      }
       setShowCamera(true);
       console.log('Camera access granted and video is playing.');
     } catch (error) {
@@ -326,7 +327,10 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             {!showCamera && !imagePreview && (
               <button
                 type="button"
-                onClick={() => setShowCamera(true)}
+                onClick={() => {
+                  setShowCamera(true);
+                  startCamera(); // Start the camera immediately
+                }}
                 className="flex items-center justify-center w-full p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
               >
                 <Camera className="w-5 h-5 ml-2" />
