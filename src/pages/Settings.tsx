@@ -8,7 +8,7 @@ export default function Settings() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+      <h1 className="text-2xl font-bold text-gray-900">הגדרות</h1>
 
       <div className="bg-white rounded-lg shadow-sm">
         <div className="p-6 space-y-6">
@@ -16,7 +16,7 @@ export default function Settings() {
             <div className="flex items-center space-x-3">
               <Printer className="w-5 h-5 text-gray-600" />
               <div>
-                <h3 className="font-medium">Automatic Printing</h3>
+                <h3 className="font-medium">הדפסה אוטומטית</h3>
                 <p className="text-sm text-gray-500">
                   Automatically print repair tickets when created
                 </p>
@@ -41,8 +41,7 @@ export default function Settings() {
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="flex items-center space-x-3">
               <Link to="/archive" className="text-blue-600 hover:text-blue-700">
-                Go to Archive
-              </Link>
+פתח פניות סגורות              </Link>
             </div>
           </div>
 
