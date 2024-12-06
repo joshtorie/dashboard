@@ -134,6 +134,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       const canvas = document.createElement('canvas');
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
+      console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(videoRef.current, 0, 0);
