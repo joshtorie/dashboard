@@ -30,7 +30,7 @@ function App() {
     return () => {
       console.log('App unmounted');
     };
-  }, [fetchRepairs]); 
+  }, []); 
 
   console.log('App render - loading:', loading, 'error:', error, 'repairs:', repairs?.length);
 
