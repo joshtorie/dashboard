@@ -35,6 +35,8 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
       const { data, error } = await query;
 
+      console.log('Fetched data:', data);
+
       if (error) {
         console.error('Supabase error:', error);
         throw error;
@@ -46,6 +48,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       }
 
       set({ repairs: data });
+      console.log('Repairs state updated:', data);
     } catch (error) {
       set({ error: error.message });
     } finally {
