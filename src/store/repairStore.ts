@@ -53,6 +53,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         console.log('Repairs state updated:', data);
       }
     } catch (error) {
+      console.error('Error in fetchRepairs:', error);
       set({ error: error.message });
     } finally {
       set({ loading: false });

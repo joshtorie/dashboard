@@ -12,7 +12,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('Dashboard mounted');
     fetchRepairs();
+    return () => {
+      console.log('Dashboard unmounted');
+    };
   }, []);
 
   const getStatusCount = (status: RepairStatus) =>
