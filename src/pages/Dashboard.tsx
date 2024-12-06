@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
 import { differenceInHours } from 'date-fns';
@@ -6,9 +7,16 @@ import { AlertCircle, Clock } from 'lucide-react';
 
 export default function Dashboard() {
   const repairs = useRepairStore((state) => state.repairs);
+  const setStatusFilter = useRepairStore((state) => state.setStatusFilter);
+  const navigate = useNavigate();
 
   const getStatusCount = (status: RepairStatus) =>
     repairs.filter((repair) => repair.status === status).length;
+
+  const handleStatusCardClick = (status: RepairStatus) => {
+    setStatusFilter(status);
+    navigate('/repairs');
+  };
 
   const overdueRepairs = repairs.filter(
     (repair) =>
@@ -35,7 +43,8 @@ export default function Dashboard() {
         {statusCards.map(({ status, englishStatus, color }) => (
           <div
             key={status}
-            className={`${color} rounded-lg p-6 shadow-sm`}
+            onClick={() => handleStatusCardClick(englishStatus)}
+            className={`${color} rounded-lg p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow`}
           >
             <h2 className="text-lg font-semibold">{status}</h2>
             <p className="text-3xl font-bold mt-2">{getStatusCount(englishStatus)}</p>

@@ -6,6 +6,8 @@ interface RepairStore {
   repairs: RepairCard[];
   loading: boolean;
   error: string | null;
+  statusFilter: RepairStatus | null;
+  setStatusFilter: (status: RepairStatus | null) => void;
   fetchRepairs: () => Promise<void>;
   createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<RepairCard>;
   updateRepair: (id: string, updates: Partial<RepairCard>) => Promise<void>;
@@ -16,6 +18,9 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   repairs: [],
   loading: false,
   error: null,
+  statusFilter: null,
+
+  setStatusFilter: (status) => set({ statusFilter: status }),
 
   fetchRepairs: async () => {
     set({ loading: true, error: null });
@@ -24,7 +29,8 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       const { data, error } = await supabase
         .from('repairs')
         .select('*')
-        .order('createdAt', { ascending: false });
+        .order('createdAt', { ascending: false })
+        .eq('status', get().statusFilter);
 
       if (error) {
         console.error('Supabase error:', error);

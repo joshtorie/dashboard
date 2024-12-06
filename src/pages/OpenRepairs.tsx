@@ -1,40 +1,48 @@
-import React from 'react';
-import { useRepairStore } from '../store/repairStore';
+import React, { useEffect } from 'react';
 import RepairCard from '../components/RepairCard';
+import { useRepairStore } from '../store/repairStore';
 
 export default function OpenRepairs() {
   const repairs = useRepairStore((state) => state.repairs);
-  const loading = useRepairStore((state) => state.loading);
-  const error = useRepairStore((state) => state.error);
-  const openRepairs = repairs.filter((repair) => repair.status !== 'Solved');
+  const statusFilter = useRepairStore((state) => state.statusFilter);
+  const setStatusFilter = useRepairStore((state) => state.setStatusFilter);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // Clear status filter when component unmounts
+  useEffect(() => {
+    return () => {
+      setStatusFilter(null);
+    };
+  }, [setStatusFilter]);
 
-  if (error) {
-    return (
-      <div className="p-4 bg-red-50 text-red-600 rounded-lg" dir="rtl">
-        שגיאה בטעינת התיקונים: {error}
-      </div>
-    );
-  }
+  const filteredRepairs = statusFilter
+    ? repairs.filter(repair => repair.status === statusFilter)
+    : repairs;
 
   return (
-    <div className="space-y-6" dir="rtl">
-      <h1 className="text-2xl font-bold text-gray-900">תיקונים פתוחים</h1>
+    <div className="space-y-4">
+      {statusFilter && (
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">
+            {statusFilter === 'Open' && 'תיקונים פתוחים'}
+            {statusFilter === 'Hold' && 'תיקונים בהמתנה'}
+            {statusFilter === 'Notified' && 'תיקונים ממתינים לאיסוף'}
+          </h2>
+          <button
+            onClick={() => setStatusFilter(null)}
+            className="text-sm text-blue-600 hover:text-blue-800"
+          >
+            הצג הכל
+          </button>
+        </div>
+      )}
       
-      {openRepairs.length === 0 ? (
-        <p className="text-gray-500">אין תיקונים פתוחים</p>
-      ) : (
-        <div className="space-y-4">
-          {openRepairs.map((repair) => (
-            <RepairCard key={repair.id} repair={repair} />
-          ))}
+      {filteredRepairs.map((repair) => (
+        <RepairCard key={repair.id} repair={repair} />
+      ))}
+
+      {filteredRepairs.length === 0 && (
+        <div className="text-center text-gray-500 py-8">
+          לא נמצאו תיקונים
         </div>
       )}
     </div>
