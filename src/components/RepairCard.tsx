@@ -137,23 +137,23 @@ export default function RepairCard({ repair }: RepairCardProps) {
         </head>
         <body>
           <div class="header">
-            <h1>Repair Ticket #${repair.id}</h1>
+            <h1>פניה #${repair.id}</h1>
             <p>Created: ${format(new Date(repair.createdAt), 'PP')}</p>
           </div>
           
           <div class="section">
-            <p><span class="label">Customer:</span> ${repair.customerName}</p>
-            <p><span class="label">Phone:</span> ${repair.phoneNumber}</p>
-            <p><span class="label">Status:</span> ${repair.status}</p>
+            <p><span class="label">שם:</span> ${repair.customerName}</p>
+            <p><span class="label">םלפון:</span> ${repair.phoneNumber}</p>
+            <p><span class="label">סטטוס:</span> ${repair.status}</p>
           </div>
 
           <div class="section">
-            <h2>Complaint</h2>
+            <h2>תיעור</h2>
             <p>${repair.complaint}</p>
           </div>
 
           <div class="section">
-            <h2>Technician Notes</h2>
+            <h2>הערות</h2>
             <p>${repair.technicianNotes || 'No notes yet'}</p>
           </div>
         </body>
