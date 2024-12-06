@@ -27,10 +27,10 @@ export default function Header() {
   const showHeaderIcon = useSettingsStore((state) => state.showHeaderIcon);
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'לוח בקרה', path: '/' },
-    { icon: Wrench, label: 'תיקונים פתוחים', path: '/repairs' },
-    { icon: Search, label: 'חיפוש', path: '/search' },
-    { icon: Settings, label: 'הגדרות', path: '/settings' },
+    { icon: LayoutDashboard, path: '/' },
+    { icon: Wrench, path: '/repairs' },
+    { icon: Search, path: '/search' },
+    { icon: Settings, path: '/settings' },
   ];
 
   return (

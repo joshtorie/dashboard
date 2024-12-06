@@ -217,7 +217,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
             className="w-full border rounded-md p-2 min-h-[100px]"
           />
         ) : (
-          <p className="text-gray-600 whitespace-pre-wrap">{complaint}</p>
+          <p className="text-gray-600 whitespace-pre-wrap border rounded-md p-3">{complaint}</p>
         )}
         {isEditing && (
           <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">שמור</button>
@@ -233,7 +233,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
             className="w-full border rounded-md p-2 min-h-[100px]"
           />
         ) : (
-          <p className="text-gray-600 whitespace-pre-wrap">{notes}</p>
+          <p className="text-gray-600 whitespace-pre-wrap border rounded-md p-3">{notes}</p>
         )}
         {isEditing && (
           <button onClick={handleNotesUpdate} className="mt-2 bg-blue-600 text-white rounded-md px-4 py-2">שמור</button>
@@ -241,19 +241,16 @@ export default function RepairCard({ repair }: RepairCardProps) {
       </div>
 
       <div className="mt-4">
-        <div className="flex items-center space-x-4 space-x-reverse">
-          <label htmlFor="status" className="font-medium min-w-[80px]">סטטוס:</label>
-          <select
-            id="status"
-            value={repair.status}
-            onChange={handleStatusChange}
-            className="w-full sm:w-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {Object.entries(statusTranslations).map(([status, translation]) => (
-              <option key={status} value={status}>{translation}</option>
-            ))}
-          </select>
-        </div>
+        <select
+          id="status"
+          value={repair.status}
+          onChange={handleStatusChange}
+          className="w-full sm:w-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {Object.entries(statusTranslations).map(([status, translation]) => (
+            <option key={status} value={status}>{translation}</option>
+          ))}
+        </select>
       </div>
 
       {showImage && imageUrl && (
