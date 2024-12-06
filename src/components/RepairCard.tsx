@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Phone, Share2, ChevronDown, ChevronUp, Printer, Image as ImageIcon } from 'lucide-react';
+import { Phone, Share2, Edit2, ChevronDown, ChevronUp, Printer, Image as ImageIcon } from 'lucide-react';
 import { RepairCard as RepairCardType } from '../types/repair';
 import { useRepairStore } from '../store/repairStore';
 import { supabase } from '../lib/supabase';
