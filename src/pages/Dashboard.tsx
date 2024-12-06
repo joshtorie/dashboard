@@ -13,7 +13,14 @@ export default function Dashboard() {
   useEffect(() => {
     console.log('Dashboard mounted');
     fetchRepairs();
+    return () => {
+      console.log('Dashboard unmounted');
+    };
   }, []); // Ensured fetchRepairs is called only once
+
+  useEffect(() => {
+    console.log('Fetching repairs...');
+  }, []);
 
   const handleStatusCardClick = (status: RepairStatus) => {
     navigate('/repairs');
