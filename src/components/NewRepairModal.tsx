@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, Camera } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRepairStore } from '../store/repairStore';
@@ -96,6 +96,17 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   const [showCamera, setShowCamera] = useState(false);
   const { autoPrintEnabled } = useSettingsStore();
   const createRepair = useRepairStore((state) => state.createRepair);
+
+  useEffect(() => {
+    if (showCamera) {
+      startCamera();
+    } else {
+      stopCamera();
+    }
+    return () => {
+      stopCamera(); // Clean up the media stream on unmount
+    };
+  }, [showCamera]);
 
   const startCamera = async () => {
     try {
@@ -315,10 +326,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             {!showCamera && !imagePreview && (
               <button
                 type="button"
-                onClick={() => {
-                  console.log('Start camera button clicked.');
-                  startCamera();
-                }}
+                onClick={() => setShowCamera(true)}
                 className="flex items-center justify-center w-full p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
               >
                 <Camera className="w-5 h-5 ml-2" />
@@ -345,7 +353,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
                   </button>
                   <button
                     type="button"
-                    onClick={stopCamera}
+                    onClick={() => setShowCamera(false)}
                     className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
                   >
                     בטל
