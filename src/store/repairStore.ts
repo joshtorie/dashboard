@@ -33,18 +33,17 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       
       if (!data) {
         console.error('No data received from Supabase');
-        throw new Error('No data received from database');
+        throw new Error('לא התקבלו נתונים מהמסד נתונים');
       }
       
       console.log('Received repairs:', data);
       set({ repairs: data });
     } catch (error) {
-      console.error('Error details:', {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
+      console.error('פרטי השגיאה:', {
+        error,
+        message: error instanceof Error ? error.message : 'שגיאה לא ידועה'
       });
-      set({ error: error.message || 'Failed to fetch repairs' });
+      set({ error: error instanceof Error ? error.message : 'שגיאה בטעינת התיקונים' });
     } finally {
       set({ loading: false });
     }
@@ -62,7 +61,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         .limit(1);
 
       if (fetchError) {
-        console.error('Supabase error:', fetchError);
+        console.error('שגיאת Supabase:', fetchError);
         throw fetchError;
       }
 
@@ -92,7 +91,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       
       if (!data) {
         console.error('No data received from Supabase');
-        throw new Error('No data received from database');
+        throw new Error('לא התקבלו נתונים מהמסד נתונים');
       }
 
       console.log('New repair created:', data);
@@ -102,12 +101,11 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
       return data;
     } catch (error) {
-      console.error('Error details:', {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
+      console.error('פרטי השגיאה:', {
+        error,
+        message: error instanceof Error ? error.message : 'שגיאה לא ידועה'
       });
-      set({ error: error.message || 'Failed to create repair' });
+      set({ error: error instanceof Error ? error.message : 'שגיאה ביצירת התיקון' });
       throw error;
     } finally {
       set({ loading: false });
@@ -132,12 +130,11 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
       // Fetch all repairs again to update the store
       await get().fetchRepairs();
     } catch (error) {
-      console.error('Error details:', {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
+      console.error('פרטי השגיאה:', {
+        error,
+        message: error instanceof Error ? error.message : 'שגיאה לא ידועה'
       });
-      set({ error: error.message || 'Failed to update repair' });
+      set({ error: error instanceof Error ? error.message : 'שגיאה בעדכון התיקון' });
       throw error;
     } finally {
       set({ loading: false });

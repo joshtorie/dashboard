@@ -6,7 +6,6 @@ import { useSettingsStore } from '../store/settingsStore';
 import { format } from 'date-fns';
 import { supabase, supabaseUrl } from '../lib/supabase';
 
-
 interface NewRepairModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -113,7 +112,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       setShowCamera(true);
     } catch (error) {
       console.error('Error accessing camera:', error);
-      toast.error('Could not access camera');
+      toast.error('לא ניתן לגשת למצלמה');
     }
   };
 
@@ -211,18 +210,18 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
             if (error) {
               console.error('Error updating repair with photo_url:', error);
-              toast.error('Failed to update repair with photo URL');
+              toast.error('שגיאה בעדכון התמונה');
             } else {
               console.log('Successfully updated repair with photo_url:', data);
             }
           } catch (error) {
             console.error('Unexpected error updating repair:', error);
-            toast.error('Failed to update repair record');
+            toast.error('שגיאה בעדכון הרשומה');
           }
         }
       }
 
-      toast.success('Repair ticket created successfully');
+      toast.success('כרטיס תיקון נוצר בהצלחה');
       if (autoPrintEnabled) {
         printRepairTicket(newRepair);
       }
@@ -232,7 +231,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       setImageFile(null);
     } catch (error) {
       console.error('Error creating repair:', error);
-      toast.error('Failed to create repair ticket');
+      toast.error('שגיאה ביצירת כרטיס תיקון');
     } finally {
       setIsSubmitting(false);
     }
@@ -242,9 +241,9 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" dir="rtl">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">New Repair Ticket</h2>
+          <h2 className="text-xl font-semibold">כרטיס תיקון חדש</h2>
           <button 
             onClick={onClose} 
             className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
@@ -257,7 +256,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="customerName" className="block font-medium text-gray-700">
-              Customer Name
+              שם לקוח
             </label>
             <input
               type="text"
@@ -273,7 +272,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
           <div className="space-y-2">
             <label htmlFor="phoneNumber" className="block font-medium text-gray-700">
-              Phone Number
+              מספר טלפון
             </label>
             <input
               type="tel"
@@ -289,7 +288,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
           <div className="space-y-2">
             <label htmlFor="complaint" className="block font-medium text-gray-700">
-              Complaint
+              תיאור התקלה
             </label>
             <textarea
               id="complaint"
@@ -297,77 +296,84 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, complaint: e.target.value }))
               }
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows={4}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="block font-medium text-gray-700">
-              Photo
-            </label>
-            <div className="flex items-center space-x-4">
+            {!showCamera && !imagePreview && (
               <button
                 type="button"
                 onClick={startCamera}
-                className="flex items-center space-x-2 px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-md"
+                className="flex items-center justify-center w-full p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
               >
-                <Camera className="w-5 h-5" />
-                <span>Take Photo</span>
+                <Camera className="w-5 h-5 ml-2" />
+                צלם תמונה
               </button>
-              {imagePreview && (
-                <img 
-                  src={imagePreview} 
-                  alt="Preview" 
-                  className="w-20 h-20 object-cover rounded-md"
-                />
-              )}
-            </div>
+            )}
+
             {showCamera && (
-              <div className="relative mt-4">
+              <div className="space-y-2">
                 <video
                   ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
                   className="w-full rounded-lg"
-                  style={{ maxHeight: '50vh' }}
+                  playsInline
+                  autoPlay
+                  muted
                 />
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
+                <div className="flex justify-center space-x-2">
                   <button
                     type="button"
                     onClick={capturePhoto}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
-                    Capture
+                    צלם
                   </button>
                   <button
                     type="button"
                     onClick={stopCamera}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
                   >
-                    Cancel
+                    בטל
                   </button>
                 </div>
               </div>
             )}
+
+            {imagePreview && (
+              <div className="space-y-2">
+                <img src={imagePreview} alt="תצוגה מקדימה" className="w-full rounded-lg" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImagePreview(null);
+                    setImageFile(null);
+                  }}
+                  className="w-full px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+                >
+                  הסר תמונה
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <div className="flex justify-end space-x-2 space-x-reverse">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              {isSubmitting ? 'שומר...' : 'שמור'}
+            </button>
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-1/2 p-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium"
               disabled={isSubmitting}
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="w-full sm:w-1/2 p-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : 'Create Ticket'}
+              בטל
             </button>
           </div>
         </form>

@@ -27,10 +27,10 @@ export default function Header() {
   const showHeaderIcon = useSettingsStore((state) => state.showHeaderIcon);
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Wrench, label: 'Open Repairs', path: '/repairs' },
-    { icon: Search, label: 'Search', path: '/search' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: LayoutDashboard, label: 'לוח בקרה', path: '/' },
+    { icon: Wrench, label: 'תיקונים פתוחים', path: '/repairs' },
+    { icon: Search, label: 'חיפוש', path: '/search' },
+    { icon: Settings, label: 'הגדרות', path: '/settings' },
   ];
 
   return (
@@ -39,7 +39,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <nav className="flex items-center space-x-4 sm:space-x-6 mx-auto">
             <div className="group">
-              <Tooltip text="New Repair">
+              <Tooltip text="תיקון חדש">
                 <button
                   onClick={() => setIsNewRepairOpen(true)}
                   className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
@@ -50,7 +50,7 @@ export default function Header() {
             </div>
 
             {navItems.map((item) => (
-              <Link key={item.label} to={item.path} className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+              <Link key={item.label} to={item.path} className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-800">
                 <item.icon className="w-5 h-5" />
                 <span>{item.label}</span>
               </Link>

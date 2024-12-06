@@ -18,7 +18,7 @@ export default function Settings() {
               <div>
                 <h3 className="font-medium">הדפסה אוטומטית</h3>
                 <p className="text-sm text-gray-500">
-                  Automatically print repair tickets when created
+                  הדפס כרטיסי תיקון באופן אוטומטי בעת יצירתם
                 </p>
               </div>
             </div>
@@ -41,7 +41,8 @@ export default function Settings() {
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="flex items-center space-x-3">
               <Link to="/archive" className="text-blue-600 hover:text-blue-700">
-פתח פניות סגורות              </Link>
+                פתח תיקונים סגורים
+              </Link>
             </div>
           </div>
 
