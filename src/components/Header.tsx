@@ -27,7 +27,6 @@ export default function Header() {
   const showHeaderIcon = useSettingsStore((state) => state.showHeaderIcon);
 
   const navItems = [
-    { icon: PlusCircle, path: '/' }, 
     { icon: Clipboard, path: '/repairs' }, 
     { icon: Search, path: '/search' }, 
     { icon: LayoutDashboard, path: '/' }, 

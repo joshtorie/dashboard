@@ -98,7 +98,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   const createRepair = useRepairStore((state) => state.createRepair);
 
   useEffect(() => {
-    if (showCamera) {
+    if (showCamera && videoRef.current) {
       startCamera();
     } else {
       stopCamera();
@@ -106,22 +106,22 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     return () => {
       stopCamera(); // Clean up the media stream on unmount
     };
-  }, [showCamera]);
+  }, [showCamera, videoRef]);
 
   const startCamera = async () => {
     try {
       console.log('Attempting to access camera...');
+      if (!videoRef.current) {
+        console.error('Video reference is not available.');
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: true // Fallback to any available camera
       });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        await videoRef.current.play();
-        console.log('Video stream is active:', stream);
-      } else {
-        console.error('Video reference is null.');
-      }
+      videoRef.current.srcObject = stream;
+      streamRef.current = stream;
+      await videoRef.current.play();
+      console.log('Video stream is active:', stream);
       setShowCamera(true);
       console.log('Camera access granted and video is playing.');
     } catch (error) {
