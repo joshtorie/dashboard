@@ -37,7 +37,7 @@ export default function Header() {
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <nav className="flex items-center space-x-4 sm:space-x-6 mx-auto">
+          <nav className="flex items-center space-x-6 sm:space-x-8 mx-auto">
             <div className="group">
               <Tooltip text="תיקון חדש">
                 <button
@@ -49,21 +49,34 @@ export default function Header() {
               </Tooltip>
             </div>
 
-            <div className="mx-2" /> {/* Space after the first icon */}
-
-            {navItems.map((item) => (
-              <Link key={item.path} to={item.path} className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-800">
-                <item.icon className="w-5 h-5 align-middle" />
-              </Link>
-            ))}
+            {navItems.map(({ icon: Icon, path }) => {
+              const isActive = location.pathname === path;
+              return (
+                <div key={path} className="group">
+                  <Tooltip text={path === '/repairs' ? 'תיקונים פתוחים' : 
+                               path === '/search' ? 'חיפוש' :
+                               path === '/' ? 'דשבורד' : 'הגדרות'}>
+                    <Link
+                      to={path}
+                      className={`p-2 rounded-lg transition-colors flex items-center
+                        ${isActive 
+                          ? 'text-blue-600 bg-blue-50' 
+                          : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                        }`}
+                    >
+                      <Icon className="w-6 h-6 align-middle" />
+                    </Link>
+                  </Tooltip>
+                </div>
+              );
+            })}
           </nav>
+          {showHeaderIcon && (
+            <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+          )}
         </div>
       </div>
-
-      <NewRepairModal
-        isOpen={isNewRepairOpen}
-        onClose={() => setIsNewRepairOpen(false)}
-      />
+      <NewRepairModal isOpen={isNewRepairOpen} onClose={() => setIsNewRepairOpen(false)} />
     </header>
   );
 }
