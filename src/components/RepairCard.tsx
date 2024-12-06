@@ -124,8 +124,12 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-      <div className="p-4">
+    <div className={`bg-white rounded-lg transition-all duration-200 ${
+      isExpanded 
+        ? 'shadow-lg ring-1 ring-gray-200 border border-gray-100' 
+        : 'shadow-sm'
+    } overflow-hidden`}>
+      <div className={`p-4 ${isExpanded ? 'bg-white' : ''}`}>
         <div className="flex justify-between items-start">
           <div>
             <h3 className="text-lg font-medium">{repair.customerName}</h3>
