@@ -56,18 +56,18 @@ const printRepairTicket = (repair: any) => {
         </div>
         
         <div class="section">
-          <p><span class="label">Customer:</span> ${repair.customerName}</p>
-          <p><span class="label">Phone:</span> ${repair.phoneNumber}</p>
-          <p><span class="label">Status:</span> ${repair.status}</p>
+          <p><span class="label">שם:</span> ${repair.customerName}</p>
+          <p><span class="label">טלפון:</span> ${repair.phoneNumber}</p>
+          <p><span class="label">סטטוס:</span> ${repair.status}</p>
         </div>
 
         <div class="section">
-          <h2>Complaint</h2>
+          <h2>תאור פניה</h2>
           <p>${repair.complaint}</p>
         </div>
 
         <div class="section">
-          <h2>Technician Notes</h2>
+          <h2>הערות</h2>
           <p>${repair.technicianNotes || 'No notes yet'}</p>
         </div>
       </body>
