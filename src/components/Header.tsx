@@ -72,7 +72,7 @@ export default function Header() {
             })}
           </nav>
           {showHeaderIcon && (
-            <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+            {/* <img src="/logo.png" alt="Logo" className="h-8 w-auto" /> */}
           )}
         </div>
       </div>
