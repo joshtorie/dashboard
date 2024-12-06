@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import RepairCard from '../components/RepairCard';
 import { useRepairStore } from '../store/repairStore';
 
 export default function OpenRepairs() {
   const repairs = useRepairStore((state) => state.repairs);
-  const setStatusFilter = useRepairStore((state) => state.setStatusFilter);
   const [filter, setFilter] = useState<'Open' | 'Hold' | 'Notified' | 'All'>('All');
-
-  // Clear status filter when component unmounts
-  useEffect(() => {
-    return () => {
-      setStatusFilter(null);
-    };
-  }, [setStatusFilter]);
 
   const filteredRepairs = repairs.filter((repair) => {
     if (filter === 'All') return true;
