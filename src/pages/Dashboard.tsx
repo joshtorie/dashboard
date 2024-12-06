@@ -17,14 +17,14 @@ export default function Dashboard() {
   );
 
   const statusCards = [
-    { status: 'Open', color: 'bg-yellow-100 text-yellow-800' },
-    { status: 'Hold', color: 'bg-red-100 text-red-800' },
-    { status: 'Notified', color: 'bg-blue-100 text-blue-800' },
+    { status: 'פתוח', color: 'bg-yellow-100 text-yellow-800' },
+    { status: 'תקוע', color: 'bg-red-100 text-red-800' },
+    { status: 'ממתין לאיסוף', color: 'bg-blue-100 text-blue-800' },
   ];
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900">דשבורד</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statusCards.map(({ status, color }) => (
@@ -41,7 +41,7 @@ export default function Dashboard() {
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex items-center space-x-2 mb-4">
           <AlertCircle className="w-5 h-5 text-red-500" />
-          <h2 className="text-lg font-semibold">Overdue Repairs (72+ hours)</h2>
+          <h2 className="text-lg font-semibold">פניות באיחור (72+ hours)</h2>
         </div>
         
         {overdueRepairs.length === 0 ? (
