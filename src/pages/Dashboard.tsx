@@ -7,7 +7,6 @@ import { AlertCircle, Clock } from 'lucide-react';
 
 export default function Dashboard() {
   const repairs = useRepairStore((state) => state.repairs);
-  const setStatusFilter = useRepairStore((state) => state.setStatusFilter);
   const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
   const navigate = useNavigate();
 
@@ -16,11 +15,7 @@ export default function Dashboard() {
     fetchRepairs();
   }, []); // Ensured fetchRepairs is called only once
 
-  const getStatusCount = (status: RepairStatus) =>
-    repairs.filter((repair) => repair.status === status).length;
-
   const handleStatusCardClick = (status: RepairStatus) => {
-    setStatusFilter(status);
     navigate('/repairs');
   };
 
@@ -36,6 +31,8 @@ export default function Dashboard() {
     { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatus, color: 'bg-blue-100 text-blue-800' },
   ];
 
+  const filteredRepairs = repairs;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-center mb-4">
@@ -46,14 +43,10 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statusCards.map(({ status, englishStatus, color }) => (
-          <div
-            key={status}
-            onClick={() => handleStatusCardClick(englishStatus)}
-            className={`${color} rounded-lg p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow`}
-          >
-            <h2 className="text-lg font-semibold">{status}</h2>
-            <p className="text-3xl font-bold mt-2">{getStatusCount(englishStatus)}</p>
+        {filteredRepairs.map((repair) => (
+          <div key={repair.id}>
+            <p className="font-medium">{repair.customerName}</p>
+            <p className="text-sm text-gray-500">{repair.id}</p>
           </div>
         ))}
       </div>
@@ -63,7 +56,6 @@ export default function Dashboard() {
           <AlertCircle className="w-5 h-5 text-red-500" />
           <h2 className="text-lg font-semibold">פניות באיחור (72+ שעות)</h2>
         </div>
-        
         {overdueRepairs.length === 0 ? (
           <p className="text-gray-500">No overdue repairs</p>
         ) : (
@@ -76,12 +68,6 @@ export default function Dashboard() {
                 <div>
                   <p className="font-medium">{repair.customerName}</p>
                   <p className="text-sm text-gray-500">{repair.id}</p>
-                </div>
-                <div className="flex items-center text-red-500">
-                  <Clock className="w-4 h-4 mr-1" />
-                  <span>
-                    {differenceInHours(new Date(), new Date(repair.createdAt))}h
-                  </span>
                 </div>
               </div>
             ))}
