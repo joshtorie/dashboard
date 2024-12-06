@@ -106,76 +106,61 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
 
   const startCamera = async () => {
     try {
+      // First try to get rear camera
       console.log('Attempting to access rear camera...');
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: {
-          facingMode: { exact: "environment" } // This specifically requests the rear camera
-        }
-      });
-      
-      // Wait for next render cycle to ensure video element exists
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          streamRef.current = stream;
-          videoRef.current.play()
-            .then(() => {
-              console.log('Video stream is active and playing');
-            })
-            .catch(error => {
-              console.error('Error playing video:', error);
-              toast.error('שגיאה בהפעלת המצלמה');
-            });
-        } else {
-          console.error('Video reference is null. Cannot set srcObject.');
-          stream.getTracks().forEach(track => track.stop());
-        }
-      });
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      // If exact "environment" fails, try without "exact" constraint
+      let stream;
       try {
-        console.log('Attempting to access camera with fallback options...');
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+        stream = await navigator.mediaDevices.getUserMedia({ 
           video: {
-            facingMode: "environment" // Fallback to preferred rear camera
+            facingMode: { exact: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
           }
         });
-        
-        requestAnimationFrame(() => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            streamRef.current = stream;
-            videoRef.current.play()
-              .then(() => {
-                console.log('Video stream is active and playing with fallback camera');
-              })
-              .catch(error => {
-                console.error('Error playing video:', error);
-                toast.error('שגיאה בהפעלת המצלמה');
-              });
-          } else {
-            console.error('Video reference is null. Cannot set srcObject.');
-            stream.getTracks().forEach(track => track.stop());
+      } catch (rearCameraError) {
+        console.log('Rear camera not available, falling back to any camera...');
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: {
+            facingMode: "environment",
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
           }
         });
-      } catch (fallbackError) {
-        console.error('Error accessing fallback camera:', fallbackError);
-        toast.error('לא ניתן לגשת למצלמה');
-        setShowCamera(false);
       }
+      
+      if (!videoRef.current) {
+        console.error('Video reference is null');
+        stream.getTracks().forEach(track => track.stop());
+        toast.error('שגיאה בהפעלת המצלמה');
+        return;
+      }
+
+      // Store the stream reference first
+      streamRef.current = stream;
+      videoRef.current.srcObject = stream;
+
+      // Wait for video to be ready
+      await videoRef.current.play();
+      console.log('Video stream is active and playing');
+      
+      // Log video dimensions once stream is active
+      console.log('Active video dimensions:', 
+        videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
+
+    } catch (error) {
+      console.error('Final camera access error:', error);
+      toast.error('לא ניתן לגשת למצלמה');
+      setShowCamera(false);
     }
   };
 
-  const handleCameraStart = () => {
-    setShowCamera(true);
-    // Start camera in next render cycle
-    requestAnimationFrame(startCamera);
-  };
-
   const stopCamera = () => {
+    console.log('Stopping camera...');
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach(track => {
+        console.log('Stopping track:', track.label);
+        track.stop();
+      });
       if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
@@ -185,31 +170,70 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
   };
 
   const capturePhoto = () => {
-    if (videoRef.current) {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0);
-        console.log('Image drawn on canvas.');
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const file = new File([blob], 'repair-photo.jpg', { type: 'image/jpeg' });
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(blob));
-            console.log('Captured image file:', file); // Log the captured file
-          } else {
-            console.error('Blob creation failed. Canvas size:', canvas.width, 'x', canvas.height);
+    if (!videoRef.current) {
+      console.error('Video reference is null during capture');
+      toast.error('שגיאה בצילום התמונה');
+      return;
+    }
+
+    const { videoWidth, videoHeight } = videoRef.current;
+    if (!videoWidth || !videoHeight) {
+      console.error('Invalid video dimensions:', videoWidth, 'x', videoHeight);
+      toast.error('שגיאה בצילום התמונה');
+      return;
+    }
+
+    console.log('Capturing photo with dimensions:', videoWidth, 'x', videoHeight);
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Failed to get canvas context');
+      toast.error('שגיאה בצילום התמונה');
+      return;
+    }
+
+    // Flip horizontally if using front camera (detect by checking track settings)
+    const videoTrack = streamRef.current?.getVideoTracks()[0];
+    const settings = videoTrack?.getSettings();
+    if (settings?.facingMode === "user") {
+      ctx.scale(-1, 1);
+      ctx.translate(-canvas.width, 0);
+    }
+
+    try {
+      ctx.drawImage(videoRef.current, 0, 0);
+      console.log('Image drawn on canvas successfully');
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            console.error('Failed to create blob from canvas');
+            toast.error('שגיאה בשמירת התמונה');
+            return;
           }
-        }, 'image/jpeg', 0.8);
-      } else {
-        console.error('Failed to get canvas context.');
-      }
-      stopCamera();
-    } else {
-      console.error('Video reference is null.');
+
+          const file = new File([blob], 'repair-photo.jpg', { type: 'image/jpeg' });
+          console.log('Created image file:', file.size, 'bytes');
+          
+          setImageFile(file);
+          const previewUrl = URL.createObjectURL(blob);
+          setImagePreview(previewUrl);
+          
+          // Clean up preview URL when component unmounts
+          window.setTimeout(() => URL.revokeObjectURL(previewUrl), 0);
+          
+          stopCamera();
+        },
+        'image/jpeg',
+        0.8
+      );
+    } catch (error) {
+      console.error('Error during canvas operations:', error);
+      toast.error('שגיאה בצילום התמונה');
     }
   };
 
@@ -298,6 +322,12 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCameraStart = () => {
+    setShowCamera(true);
+    // Start camera in next render cycle
+    requestAnimationFrame(startCamera);
   };
 
   if (!isOpen) return null;
