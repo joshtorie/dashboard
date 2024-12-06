@@ -27,11 +27,11 @@ export default function Header() {
   const showHeaderIcon = useSettingsStore((state) => state.showHeaderIcon);
 
   const navItems = [
-    { icon: PlusCircle, path: '/', label: 'תיקון חדש' },
-    { icon: Clipboard, path: '/repairs', label: 'תיקונים פתוחים' },
-    { icon: Search, path: '/search', label: 'חיפוש' },
-    { icon: LayoutDashboard, path: '/', label: 'לוח בקרה' },
-    { icon: Settings, path: '/settings', label: 'הגדרות' },
+    { icon: PlusCircle, path: '/' }, 
+    { icon: Clipboard, path: '/repairs' }, 
+    { icon: Search, path: '/search' }, 
+    { icon: LayoutDashboard, path: '/' }, 
+    { icon: Settings, path: '/settings' }, 
   ];
 
   return (
@@ -52,10 +52,9 @@ export default function Header() {
 
             <div className="mx-2" /> {/* Space after the first icon */}
 
-            {navItems.map((item, index) => (
-              <Link key={item.label} to={item.path} className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-800">
+            {navItems.map((item) => (
+              <Link key={item.path} to={item.path} className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-800">
                 <item.icon className="w-5 h-5" />
-                <span>{item.label}</span>
               </Link>
             ))}
           </nav>
