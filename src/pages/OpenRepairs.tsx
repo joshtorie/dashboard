@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRepairStore } from '../store/repairStore';
 import RepairCard from '../components/RepairCard';
 
@@ -6,19 +6,7 @@ export default function OpenRepairs() {
   const repairs = useRepairStore((state) => state.repairs);
   const loading = useRepairStore((state) => state.loading);
   const error = useRepairStore((state) => state.error);
-  const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
   const openRepairs = repairs.filter((repair) => repair.status !== 'Solved');
-
-  useEffect(() => {
-    const loadRepairs = async () => {
-      try {
-        await fetchRepairs();
-      } catch (err) {
-        console.error('Error loading repairs:', err);
-      }
-    };
-    loadRepairs();
-  }, [fetchRepairs]);
 
   if (loading) {
     return (
