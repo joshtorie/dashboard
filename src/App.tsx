@@ -15,14 +15,19 @@ function App() {
   const error = useRepairStore((state) => state.error);
 
   useEffect(() => {
+    console.log('App mounted');
     const initializeApp = async () => {
       try {
+        console.log('Fetching repairs...');
         await fetchRepairs();
       } catch (err) {
         console.error('Failed to fetch repairs:', err);
       }
     };
     initializeApp();
+    return () => {
+      console.log('App unmounted');
+    };
   }, [fetchRepairs]);
 
   if (loading) {
@@ -40,13 +45,14 @@ function App() {
           <h2 className="text-xl font-bold mb-2">Error Loading Application</h2>
           <p>{error}</p>
         </div>
-      </div>
+    </div>
     );
   }
 
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+        <Toaster position="top-right" />
         <Header />
         <main className="container mx-auto px-4 py-8">
           <Routes>
@@ -57,7 +63,6 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
-        <Toaster position="top-right" />
       </div>
     </Router>
   );
