@@ -4,12 +4,13 @@ import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
 import { differenceInHours } from 'date-fns';
 import { AlertCircle, Clock } from 'lucide-react';
+import { useStatusCounts } from '../hooks/useStatusCounts';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const repairs = useRepairStore(state => state.repairs);
   const fetchRepairs = useRepairStore(state => state.fetchRepairs);
-  const getStatusCount = useRepairStore(state => state.getStatusCount);
+  const statusCounts = useStatusCounts();
 
   useEffect(() => {
     fetchRepairs();
@@ -35,9 +36,9 @@ export default function Dashboard() {
             onClick={() => navigate('/repairs')}
           >
             <h3 className="text-lg font-semibold">{card.status}</h3>
-            <p className="text-2xl font-bold mt-2">
-              {getStatusCount(card.englishStatus)}
-            </p>
+            <div className="text-2xl font-bold mt-2">
+              {statusCounts[card.englishStatus] || 0}
+            </div>
           </div>
         ))}
       </div>
