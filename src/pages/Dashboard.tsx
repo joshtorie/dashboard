@@ -26,7 +26,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex items-center mb-4">
         <img src="https://github.com/joshtorie/dashboard/raw/main/logo.png" alt="Logo" className="h-10 w-auto mr-2" />
-        <h1 className="text-2xl font-bold text-gray-900">דשבורד</h1>
+        <h1 className="text-2xl font-bold text-gray-900">מעבדת תיקונים</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -44,7 +44,7 @@ export default function Dashboard() {
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex items-center space-x-2 mb-4">
           <AlertCircle className="w-5 h-5 text-red-500" />
-          <h2 className="text-lg font-semibold">פניות באיחור (72+ hours)</h2>
+          <h2 className="text-lg font-semibold">פניות באיחור (72+ שעות)</h2>
         </div>
         
         {overdueRepairs.length === 0 ? (
