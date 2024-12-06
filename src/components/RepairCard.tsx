@@ -42,10 +42,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const updateRepair = useRepairStore((state) => state.updateRepair);
 
   useEffect(() => {
-    if (repair.photo_url && isExpanded) {
+    if (repair.photo_url) {
       getImageUrl();
     }
-  }, [repair.photo_url, isExpanded]);
+  }, [repair.photo_url]);
 
   const getImageUrl = async () => {
     if (!repair.photo_url) {
