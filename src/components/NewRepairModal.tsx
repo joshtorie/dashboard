@@ -315,7 +315,10 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
             {!showCamera && !imagePreview && (
               <button
                 type="button"
-                onClick={startCamera}
+                onClick={() => {
+                  console.log('Start camera button clicked.');
+                  startCamera();
+                }}
                 className="flex items-center justify-center w-full p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
               >
                 <Camera className="w-5 h-5 ml-2" />
