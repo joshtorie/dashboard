@@ -40,42 +40,56 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showImage, setShowImage] = useState(false);
   const updateRepair = useRepairStore((state) => state.updateRepair);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    if (repair.photo_url && isExpanded) {
-      getImageUrl();
-    }
+    let mounted = true;
+    
+    const fetchImageUrl = async () => {
+      if (!repair.photo_url || !isExpanded) return;
+      
+      try {
+        const { data } = await supabase.storage
+          .from('repair-photos')
+          .getPublicUrl(repair.photo_url);
+
+        if (mounted && data?.publicUrl) {
+          setImageUrl(data.publicUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching image URL:', error);
+      }
+    };
+
+    fetchImageUrl();
+    return () => {
+      mounted = false;
+    };
   }, [repair.photo_url, isExpanded]);
 
-  const getImageUrl = async () => {
-    if (!repair.photo_url) {
-      console.log('No photo_url present for repair:', repair.id);
-      return;
-    }
-
-    console.log('Fetching public URL for:', repair.photo_url);
-    const { data } = await supabase.storage
-      .from('repair-photos')
-      .getPublicUrl(repair.photo_url);
-
-    if (data?.publicUrl) {
-      console.log('Retrieved public URL:', data.publicUrl);
-      setImageUrl(data.publicUrl);
-    } else {
-      console.log('No public URL retrieved');
+  const handleImageClick = () => {
+    if (imageUrl) {
+      setShowImage(!showImage);
     }
   };
 
   const deleteImage = async () => {
     if (!repair.photo_url) return;
 
-    const { error } = await supabase.storage
-      .from('repair-photos')
-      .remove([repair.photo_url]);
+    try {
+      const { error } = await supabase.storage
+        .from('repair-photos')
+        .remove([repair.photo_url]);
 
-    if (error) {
+      if (error) throw error;
+
+      await updateRepair(repair.id, { photo_url: null });
+      setImageUrl(null);
+      setShowImage(false);
+      toast.success('התמונה נמחקה בהצלחה');
+    } catch (error) {
       console.error('Error deleting image:', error);
-      toast.error('Failed to delete image');
+      toast.error('שגיאה במחיקת התמונה');
     }
   };
 
@@ -262,16 +276,44 @@ export default function RepairCard({ repair }: RepairCardProps) {
         </select>
       </div>
 
-      {showImage && imageUrl && (
+      {isExpanded && repair.photo_url && (
         <div className="mt-4">
-          <img src={imageUrl} alt="תמונת תיקון" className="w-full max-w-md rounded-lg shadow-sm" />
+          <div className="flex items-center justify-between">
+            <label className="font-medium">תמונה:</label>
+            <button
+              onClick={deleteImage}
+              className="text-red-600 hover:text-red-700 text-sm"
+            >
+              מחק תמונה
+            </button>
+          </div>
+          {imageUrl && (
+            <div className="relative mt-2">
+              <img
+                ref={imageRef}
+                src={imageUrl}
+                alt="תמונת תיקון"
+                className="w-full h-48 object-cover rounded-lg cursor-pointer"
+                onClick={handleImageClick}
+              />
+              {showImage && (
+                <div 
+                  className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+                  onClick={() => setShowImage(false)}
+                >
+                  <img
+                    src={imageUrl}
+                    alt="תמונת תיקון מוגדלת"
+                    className="max-w-full max-h-full object-contain p-4"
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
       <div className="flex items-center justify-between mt-4 space-x-4 space-x-reverse">
-        <button onClick={() => setShowImage(!showImage)} className="text-blue-600 hover:text-blue-700 w-full">
-          <ImageIcon className="w-5 h-5 mx-auto" />
-        </button>
         <button onClick={() => setIsEditing(!isEditing)} className="text-blue-600 hover:text-blue-700 w-full">
           <Edit2 className="w-5 h-5 mx-auto" />
         </button>
