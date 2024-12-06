@@ -329,7 +329,9 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
                 type="button"
                 onClick={() => {
                   setShowCamera(true);
-                  startCamera(); // Start the camera immediately
+                  setTimeout(() => {
+                    startCamera(); // Start the camera after a short delay
+                  }, 100); // Delay of 100 ms
                 }}
                 className="flex items-center justify-center w-full p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
               >
