@@ -17,9 +17,9 @@ export default function Dashboard() {
   );
 
   const statusCards = [
-    { status: 'פתוח', color: 'bg-yellow-100 text-yellow-800' },
-    { status: 'תקוע', color: 'bg-red-100 text-red-800' },
-    { status: 'ממתין לאיסוף', color: 'bg-blue-100 text-blue-800' },
+    { status: 'פתוח', englishStatus: 'Open' as RepairStatus, color: 'bg-yellow-100 text-yellow-800' },
+    { status: 'תקוע', englishStatus: 'Hold' as RepairStatus, color: 'bg-red-100 text-red-800' },
+    { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatus, color: 'bg-blue-100 text-blue-800' },
   ];
 
   return (
@@ -30,13 +30,13 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statusCards.map(({ status, color }) => (
+        {statusCards.map(({ status, englishStatus, color }) => (
           <div
             key={status}
             className={`${color} rounded-lg p-6 shadow-sm`}
           >
             <h2 className="text-lg font-semibold">{status}</h2>
-            <p className="text-3xl font-bold mt-2">{getStatusCount(status as RepairStatus)}</p>
+            <p className="text-3xl font-bold mt-2">{getStatusCount(englishStatus)}</p>
           </div>
         ))}
       </div>
