@@ -8,10 +8,10 @@ export default function Archive() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Archive</h1>
+      <h1 className="text-2xl font-bold text-gray-900">פניות סגורות</h1>
       
       {solvedRepairs.length === 0 ? (
-        <p className="text-gray-500">No archived repairs</p>
+        <p className="text-gray-500">אין פניות סגורות</p>
       ) : (
         <div className="space-y-4">
           {solvedRepairs.map((repair) => (
