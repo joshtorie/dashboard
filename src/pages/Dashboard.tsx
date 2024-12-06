@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
@@ -8,7 +8,12 @@ import { AlertCircle, Clock } from 'lucide-react';
 export default function Dashboard() {
   const repairs = useRepairStore((state) => state.repairs);
   const setStatusFilter = useRepairStore((state) => state.setStatusFilter);
+  const fetchRepairs = useRepairStore((state) => state.fetchRepairs);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchRepairs();
+  }, [fetchRepairs]);
 
   const getStatusCount = (status: RepairStatus) =>
     repairs.filter((repair) => repair.status === status).length;
