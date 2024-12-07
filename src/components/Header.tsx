@@ -27,7 +27,6 @@ export default function Header() {
   const navItems = [
     { icon: Clipboard, path: '/repairs' }, 
     { icon: Search, path: '/search' }, 
-    { icon: LayoutDashboard, path: '/' }, 
     { icon: Settings, path: '/settings' }, 
   ];
 
@@ -47,20 +46,22 @@ export default function Header() {
               </Tooltip>
             </div>
 
+            <div className="mx-2"></div> {/* Spacing */}
+
             {navItems.map(({ icon: Icon, path }) => {
               const isActive = location.pathname === path;
               return (
                 <div key={path} className="group">
                   <Tooltip text={path === '/repairs' ? 'תיקונים פתוחים' : 
                                path === '/search' ? 'חיפוש' :
-                               path === '/' ? 'דשבורד' : 'הגדרות'}>
+                               path === '/settings' ? 'הגדרות' : ''}>
                     <Link
                       to={path}
                       className={`p-2 rounded-lg transition-colors flex items-center
                         ${isActive 
                           ? 'text-blue-600 bg-blue-50' 
                           : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                        }`}
+                        }`
                     >
                       <Icon className="w-6 h-6 align-middle" />
                     </Link>
@@ -68,6 +69,21 @@ export default function Header() {
                 </div>
               );
             })}
+
+            <div className="mx-2"></div> {/* Spacing */}
+
+            <div className="group">
+              <Tooltip text="דשבורד">
+                <Link
+                  to="/"
+                  className={`p-2 rounded-lg transition-colors flex items-center
+                    ${location.pathname === '/' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'}
+                  `}
+                >
+                  <LayoutDashboard className="w-6 h-6 align-middle" />
+                </Link>
+              </Tooltip>
+            </div>
           </nav>
         </div>
       </div>
