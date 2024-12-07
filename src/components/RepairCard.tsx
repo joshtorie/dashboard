@@ -39,6 +39,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
   const [notes, setNotes] = useState(repair.technicianNotes);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showImage, setShowImage] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const updateRepair = useRepairStore((state) => state.updateRepair);
 
   useEffect(() => {
@@ -129,13 +130,21 @@ export default function RepairCard({ repair }: RepairCardProps) {
   };
 
   const handleShareClick = async () => {
+    if (isSharing) return;
+    
     try {
+      setIsSharing(true);
+      // Set a timeout to reset sharing state after 1 minute
+      setTimeout(() => setIsSharing(false), 60000);
+      
       await navigator.share({
         title: `תיקון ${repair.id}`,
         text: `פרטי תיקון:\nשם: ${repair.customerName}\nטלפון: ${repair.phoneNumber}\nתלונה: ${repair.complaint}`
       });
+      setIsSharing(false);
     } catch (error) {
       console.error('Error sharing:', error);
+      setIsSharing(false);
     }
   };
 
@@ -293,8 +302,9 @@ export default function RepairCard({ repair }: RepairCardProps) {
               <button
                 onClick={handleShareClick}
                 className="text-blue-600 hover:text-blue-700"
+                disabled={isSharing}
               >
-                <Share2 className="w-5 h-5" />
+                <Share2 className={`w-5 h-5 ${isSharing ? 'opacity-50' : ''}`} />
               </button>
               <button
                 onClick={handlePrint}
