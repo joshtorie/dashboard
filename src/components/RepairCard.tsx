@@ -137,11 +137,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
       // Set a timeout to reset sharing state after 1 minute
       setTimeout(() => setIsSharing(false), 60000);
       
-      await navigator.share({
-        title: `תיקון ${repair.id}`,
-        text: `פרטי תיקון:\nשם: ${repair.customerName}\nטלפון: ${repair.phoneNumber}\nתלונה: ${repair.complaint}`
-      });
-      setIsSharing(false);
+      const phoneNumber = `972${repair.phoneNumber}`;
+      const message = encodeURIComponent(`שלום! התיקון הושלם. אתה מוזמן לאסוף את הפריט בשעות הפעילות שלנו, בין 9:30 ל-16:30.\nלשאלות או עזרה נוספת, אנחנו כאן בשבילך.\nאורבניקו`);
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+      window.open(whatsappUrl, '_blank');
     } catch (error) {
       if (error.name === 'AbortError') {
         toast.error('שיתוף בוטל'); // Notify user that sharing was canceled
