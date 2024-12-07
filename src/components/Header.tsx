@@ -60,8 +60,8 @@ export default function Header() {
                       className={`p-2 rounded-lg transition-colors flex items-center
                         ${isActive 
                           ? 'text-blue-600 bg-blue-50' 
-                          : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                        }`
+                          : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'}
+                      `}
                     >
                       <Icon className="w-6 h-6 align-middle" />
                     </Link>
