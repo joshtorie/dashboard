@@ -27,7 +27,7 @@ const getStatusColor = (status: RepairCardType['status']) => {
 
 const statusTranslations = {
   'Open': 'פתוח',
-  'Hold': 'בהמתנה',
+  'Hold': 'תקוע',
   'Notified': 'נשלחה הודעה',
   'Solved': 'טופל'
 };
