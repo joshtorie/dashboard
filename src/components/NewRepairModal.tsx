@@ -273,12 +273,15 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      // First, create the repair with a null photo_url
       const newRepair = await createRepair({
         ...formData,
         status: 'Open',
         technicianNotes: '',
+        photo_url: null,
       });
 
+      // If we have an image file, upload it and update the repair
       if (imageFile) {
         console.log('Image file exists, starting upload process');
         const fileName = await uploadImage(newRepair.id);
@@ -292,13 +295,19 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
                 updatedAt: new Date().toISOString()
               })
               .eq('id', newRepair.id)
-              .select('*')
+              .select()
               .single();
 
             if (error) {
               console.error('Error updating repair with photo_url:', error);
               toast.error('שגיאה בעדכון התמונה');
-            } else {
+            } else if (data) {
+              // Update the local store with the new data
+              useRepairStore.setState((state) => ({
+                repairs: state.repairs.map((r) => 
+                  r.id === data.id ? data : r
+                )
+              }));
               console.log('Successfully updated repair with photo_url:', data);
             }
           } catch (error) {

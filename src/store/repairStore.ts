@@ -68,6 +68,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         id: nextId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        photo_url: null, // Explicitly initialize photo_url
       };
 
       const { data, error } = await supabase
