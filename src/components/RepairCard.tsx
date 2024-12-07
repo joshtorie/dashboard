@@ -138,7 +138,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
       setTimeout(() => setIsSharing(false), 60000);
       
       const phoneNumber = `972${repair.phoneNumber}`;
-      const message = encodeURIComponent(`שלום! התיקון הושלם. אתה מוזמן לאסוף את הפריט בשעות הפעילות שלנו, בין 9:30 ל-16:30.\nלשאלות או עזרה נוספת, אנחנו כאן בשבילך.\nאורבניקו`);
+      const message = encodeURIComponent(`שלום! תיקון ${repair.id} מוכן לאיסוף בשעות הפעילות שלנו, בין 9:30 ל-16:30.\nלשאלות או עזרה נוספת, אנחנו כאן בשבילך.\nאורבניקו`);
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
       window.open(whatsappUrl, '_blank');
     } catch (error) {
