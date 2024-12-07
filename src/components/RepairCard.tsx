@@ -52,11 +52,12 @@ export default function RepairCard({ repair }: RepairCardProps) {
       
       console.log('Fetching image URL for:', repair.photo_url);
       try {
+        // Get public URL
         const { data } = await supabase.storage
           .from('repair-photos')
           .getPublicUrl(repair.photo_url);
 
-        console.log('Supabase response:', data);
+        console.log('Supabase public URL response:', data);
 
         if (mounted && data?.publicUrl) {
           console.log('Setting image URL:', data.publicUrl);
@@ -74,6 +75,35 @@ export default function RepairCard({ repair }: RepairCardProps) {
       mounted = false;
     };
   }, [repair.photo_url, isExpanded]);
+
+  const handleImageError = async () => {
+    console.error('Image failed to load, attempting to refresh URL');
+    try {
+      // Verify the file exists
+      const { data: fileData, error: fileError } = await supabase.storage
+        .from('repair-photos')
+        .list('', {
+          search: repair.photo_url
+        });
+
+      if (fileError || !fileData || fileData.length === 0) {
+        console.error('File not found in storage:', repair.photo_url);
+        return;
+      }
+
+      // Get a fresh public URL
+      const { data } = await supabase.storage
+        .from('repair-photos')
+        .getPublicUrl(repair.photo_url);
+
+      if (data?.publicUrl) {
+        console.log('Refreshed image URL:', data.publicUrl);
+        setImageUrl(data.publicUrl);
+      }
+    } catch (error) {
+      console.error('Error refreshing image URL:', error);
+    }
+  };
 
   const handleNotesUpdate = async () => {
     try {
@@ -235,11 +265,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
                   alt="תמונת תיקון"
                   className="w-full h-48 object-cover rounded-lg cursor-pointer"
                   onClick={() => setShowImage(true)}
-                  onError={(e) => {
-                    console.error('Error loading image:', e);
-                    const img = e.target as HTMLImageElement;
-                    console.log('Failed image URL:', img.src);
-                  }}
+                  onError={handleImageError}
                 />
               </div>
             )}
