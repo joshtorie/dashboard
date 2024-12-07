@@ -171,6 +171,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
       <div className={`p-4 ${isExpanded ? 'bg-white' : ''}`}>
         <div className="flex justify-between items-start">
           <div>
+            <p className="text-gray-800 font-bold">{repair.customerName}</p>
             <p className="text-gray-500">{repair.id}</p>
           </div>
           <button
