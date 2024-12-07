@@ -45,15 +45,24 @@ export default function RepairCard({ repair }: RepairCardProps) {
     let mounted = true;
     
     const fetchImageUrl = async () => {
-      if (!repair.photo_url || !isExpanded) return;
+      if (!repair.photo_url || !isExpanded) {
+        console.log('Skipping image fetch:', { photo_url: repair.photo_url, isExpanded });
+        return;
+      }
       
+      console.log('Fetching image URL for:', repair.photo_url);
       try {
         const { data } = await supabase.storage
           .from('repair-photos')
           .getPublicUrl(repair.photo_url);
 
+        console.log('Supabase response:', data);
+
         if (mounted && data?.publicUrl) {
+          console.log('Setting image URL:', data.publicUrl);
           setImageUrl(data.publicUrl);
+        } else {
+          console.log('Not setting image URL:', { mounted, publicUrl: data?.publicUrl });
         }
       } catch (error) {
         console.error('Error fetching image URL:', error);
@@ -226,6 +235,11 @@ export default function RepairCard({ repair }: RepairCardProps) {
                   alt="תמונת תיקון"
                   className="w-full h-48 object-cover rounded-lg cursor-pointer"
                   onClick={() => setShowImage(true)}
+                  onError={(e) => {
+                    console.error('Error loading image:', e);
+                    const img = e.target as HTMLImageElement;
+                    console.log('Failed image URL:', img.src);
+                  }}
                 />
               </div>
             )}
