@@ -29,7 +29,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="flex justify-center mb-4">
-        <img src="https://raw.githubusercontent.com/joshtorie/dashboard/main/logo.png" alt="Logo" className="max-w-xs h-auto" />
+        <img src="https://raw.githubusercontent.com/joshtorie/dashboard/main/logo.png" alt="Logo" className="max-w-md h-auto" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {statusCards.map((card) => (
