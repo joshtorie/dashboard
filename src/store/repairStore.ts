@@ -120,7 +120,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
     }
   },
 
-  updateStatus: async (id, status) => {
+  updateStatus: async (id: string, status: RepairStatus): Promise<void> => {
     return useRepairStore.getState().updateRepair(id, { status });
   },
 }));
