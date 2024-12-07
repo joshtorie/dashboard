@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import RepairCard from '../components/RepairCard';
 import { useRepairStore } from '../store/repairStore';
+import { RepairStatus } from '../types/repair';
 
 export default function OpenRepairs() {
   const repairs = useRepairStore((state) => state.repairs);
   const [filter, setFilter] = useState<'Open' | 'Hold' | 'Notified' | 'All'>('All');
 
-  const filteredRepairs = repairs.filter((repair) => {
-    if (filter === 'All') return true;
-    return repair.status === filter;
-  });
+  // First filter out any solved repairs, then apply the status filter
+  const filteredRepairs = repairs
+    .filter((repair) => repair.status !== 'Solved')
+    .filter((repair) => {
+      if (filter === 'All') return true;
+      return repair.status === filter;
+    });
 
   return (
     <div className="space-y-4">
@@ -17,7 +21,7 @@ export default function OpenRepairs() {
         <h2 className="text-lg font-semibold">תיקונים פתוחים</h2>
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value as 'Open' | 'Hold' | 'Notified' | 'All')}
+          onChange={(e) => setFilter(e.target.value as typeof filter)}
           className="border rounded-md p-2"
         >
           <option value="All">הכל</option>
