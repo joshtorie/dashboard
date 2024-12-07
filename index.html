@@ -2,7 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co; img-src 'self' blob: data: https://*.supabase.co" />
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel.app https://*.vercel.live;
+      style-src 'self' 'unsafe-inline';
+      connect-src 'self' https://*.supabase.co https://*.vercel.app https://*.vercel.live;
+      img-src 'self' blob: data: https://*.supabase.co;
+      frame-src 'self' https://*.vercel.app https://*.vercel.live;
+      font-src 'self' data:;
+      object-src 'none';" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
