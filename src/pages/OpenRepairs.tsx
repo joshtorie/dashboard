@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import RepairCard from '../components/RepairCard';
 import { useRepairStore } from '../store/repairStore';
 import { RepairStatus } from '../types/repair';
 
 export default function OpenRepairs() {
+  const location = useLocation();
   const repairs = useRepairStore((state) => state.repairs);
   const [filter, setFilter] = useState<'Open' | 'Hold' | 'Notified' | 'All'>('All');
+
+  // Read query parameters to set the filter
+  React.useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const status = queryParams.get('status');
+    if (status && ['Open', 'Hold', 'Notified'].includes(status)) {
+      setFilter(status);
+    }
+  }, [location.search]);
 
   // First filter out any solved repairs, then apply the status filter
   const filteredRepairs = repairs

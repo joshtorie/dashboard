@@ -33,7 +33,7 @@ export default function Dashboard() {
           <div
             key={card.englishStatus}
             className={`${card.color} rounded-lg p-4 cursor-pointer`}
-            onClick={() => navigate('/repairs')}
+            onClick={() => navigate(`/repairs?status=${card.englishStatus}`)}
           >
             <h3 className="text-lg font-semibold">{card.status}</h3>
             <div className="text-2xl font-bold mt-2">
