@@ -143,7 +143,11 @@ export default function RepairCard({ repair }: RepairCardProps) {
       });
       setIsSharing(false);
     } catch (error) {
-      console.error('Error sharing:', error);
+      if (error.name === 'AbortError') {
+        toast.error('שיתוף בוטל'); // Notify user that sharing was canceled
+      } else {
+        console.error('Error sharing:', error);
+      }
       setIsSharing(false);
     }
   };
