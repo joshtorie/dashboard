@@ -28,6 +28,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-center mb-4">
+        <img src="https://github.com/joshtorie/dashboard/raw/main/logo.png" alt="Logo" className="w-16 h-16" />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {statusCards.map((card) => (
           <div
