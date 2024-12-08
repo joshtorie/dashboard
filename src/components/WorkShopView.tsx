@@ -39,23 +39,28 @@ const WorkShopView: React.FC = () => {
       {sortedRepairs().map(repair => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
-          <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md`}> {/* Card styling */}
-            <p className="border-b pb-2">{days} days, {hours} hours</p> {/* Time open with thin border */}
-            <h2 className="font-bold">{repair.customerName}</h2>
-            <p className="text-sm float-right">ID: {repair.id}</p>
-            <p>Complaint: {repair.complaint}</p>
-            <p>Technician Notes: {repair.technicianNotes}</p>
-            <select onChange={(e) => { 
-              updateRepairColor(repair.id, e.target.value); 
-              console.log('Updated repairs:', repairs); 
-              console.log('Updated repair:', repair); 
-            }} className="mt-2"> {/* Update color for specific card */}
-              <option value="bg-white">Select Color</option>
-              <option value="bg-pastel-aqua">Pastel Aqua</option>
-              <option value="bg-pastel-tan">Pastel Tan</option>
-              <option value="bg-pastel-blond">Pastel Blond</option>
-              <option value="bg-pastel-mauve">Pastel Mauve</option>
-            </select>
+          <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md`}> 
+            <p className="border-b pb-2">{days} days, {hours} hours</p> 
+            <div className="flex justify-between items-center">
+              <h2 className="font-bold">{repair.customerName}</h2>
+              <p className="text-sm">ID: {repair.id}</p> 
+            </div>
+            <div className="border p-2 my-2"> 
+              <p>Complaint: {repair.complaint}</p>
+            </div>
+            <div className="border p-2 my-2"> 
+              <p>Technician Notes: {repair.technicianNotes}</p>
+            </div>
+            <div className="flex items-center">
+              <select onChange={(e) => updateRepairColor(repair.id, e.target.value)} className="mt-2 mr-2"> 
+                <option value="bg-white">Select Color</option>
+                <option value="bg-pastel-aqua">Pastel Aqua</option>
+                <option value="bg-pastel-tan">Pastel Tan</option>
+                <option value="bg-pastel-blond">Pastel Blond</option>
+                <option value="bg-pastel-mauve">Pastel Mauve</option>
+              </select>
+              <span>Status: {repair.status}</span> 
+            </div>
           </div>
         );
       })}
