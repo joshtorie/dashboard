@@ -3,7 +3,7 @@ import { useRepairStore } from '../store/repairStore';
 
 const WorkShopView: React.FC = () => {
   const { repairs } = useRepairStore();
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState('bg-white'); // Default background color
   const [sortOption, setSortOption] = useState('');
 
   // Filter repairs that are not solved
@@ -27,8 +27,8 @@ const WorkShopView: React.FC = () => {
   };
 
   return (
-    <div className="workshop-view grid grid-cols-5 gap-4"> 
-      <div className="filter-options">
+    <div className="workshop-view grid grid-cols-5 gap-4"> {/* 5 columns layout */}
+      <div className="filter-options col-span-1"> {/* Adjusted to take less space */}
         <label>Sort by:</label>
         <select onChange={(e) => setSortOption(e.target.value)}>
           <option value="">Select</option>
@@ -40,16 +40,14 @@ const WorkShopView: React.FC = () => {
       {sortedRepairs().map(repair => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
-          <div key={repair.id} className={`repair-card ${color} border p-4 rounded shadow-md`}> 
-            <h2>{repair.customerName}</h2>
-            <p>Repair Ticket ID: {repair.id}</p>
-            <p className="text-sm">Status: {repair.status}</p>
+          <div key={repair.id} className={`repair-card ${color} border p-4 rounded shadow-md`}> {/* Card styling */}
+            <p className="border-b pb-2">{days} days, {hours} hours</p> {/* Time open with thin border */}
+            <h2 className="font-bold">{repair.customerName}</h2>
+            <p className="text-sm float-right">Repair Ticket ID: {repair.id}</p>
             <p>Complaint: {repair.complaint}</p>
             <p>Technician Notes: {repair.technicianNotes}</p>
-            <p>Active Timer: {days} days, {hours} hours</p>
-            <label>Background Color:</label>
-            <select onChange={(e) => setColor(e.target.value)}>
-              <option value="">Select Color</option>
+            <select onChange={(e) => setColor(e.target.value)} className="mt-2">
+              <option value="bg-white">Select Color</option>
               <option value="bg-pastel-aqua">Pastel Aqua</option>
               <option value="bg-pastel-tan">Pastel Tan</option>
               <option value="bg-pastel-blond">Pastel Blond</option>
