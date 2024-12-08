@@ -4,7 +4,7 @@ import { useRepairStore } from '../store/repairStore';
 const WorkShopView: React.FC = () => {
   const { repairs } = useRepairStore();
   const [color, setColor] = useState('');
-  const [sortOption, setSortOption] = useState(''); // State for sorting option
+  const [sortOption, setSortOption] = useState('');
 
   // Filter repairs that are not solved
   const filteredRepairs = repairs.filter(repair => repair.status !== 'Solved');
@@ -22,14 +22,12 @@ const WorkShopView: React.FC = () => {
   const sortedRepairs = () => {
     if (sortOption === 'oldest') {
       return filteredRepairs.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    } else if (sortOption === 'color') {
-      return filteredRepairs.sort((a, b) => a.color.localeCompare(b.color)); // Assuming color is a property of repair
     }
     return filteredRepairs;
   };
 
   return (
-    <div className="workshop-view">
+    <div className="workshop-view grid grid-cols-5 gap-4"> 
       <div className="filter-options">
         <label>Sort by:</label>
         <select onChange={(e) => setSortOption(e.target.value)}>
@@ -42,17 +40,21 @@ const WorkShopView: React.FC = () => {
       {sortedRepairs().map(repair => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
-          <div key={repair.id} className={`repair-card ${color}`}> 
+          <div key={repair.id} className={`repair-card ${color} border p-4 rounded shadow-md`}> 
             <h2>{repair.customerName}</h2>
             <p>Repair Ticket ID: {repair.id}</p>
             <p className="text-sm">Status: {repair.status}</p>
             <p>Complaint: {repair.complaint}</p>
             <p>Technician Notes: {repair.technicianNotes}</p>
             <p>Active Timer: {days} days, {hours} hours</p>
-            <button onClick={() => setColor('bg-pastel-aqua')}>Pastel Aqua</button>
-            <button onClick={() => setColor('bg-pastel-tan')}>Pastel Tan</button>
-            <button onClick={() => setColor('bg-pastel-blond')}>Pastel Blond</button>
-            <button onClick={() => setColor('bg-pastel-mauve')}>Pastel Mauve</button>
+            <label>Background Color:</label>
+            <select onChange={(e) => setColor(e.target.value)}>
+              <option value="">Select Color</option>
+              <option value="bg-pastel-aqua">Pastel Aqua</option>
+              <option value="bg-pastel-tan">Pastel Tan</option>
+              <option value="bg-pastel-blond">Pastel Blond</option>
+              <option value="bg-pastel-mauve">Pastel Mauve</option>
+            </select>
           </div>
         );
       })}
