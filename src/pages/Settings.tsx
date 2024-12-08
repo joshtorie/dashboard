@@ -40,11 +40,7 @@ export default function Settings() {
             <div className="flex items-center space-x-3">
               <h3 className="font-medium">WorkShop View</h3>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" checked={workshopViewEnabled} onChange={toggleWorkshopView} className="sr-only" />
-              <div className="w-11 h-6 bg-gray-200 rounded-full shadow-inner"></div>
-              <div className={`absolute w-6 h-6 bg-blue-600 rounded-full transition-transform ${workshopViewEnabled ? 'translate-x-5' : 'translate-x-0'}`}></div>
-            </label>
+            <Link to="/workshop" className="text-blue-600 hover:underline">Go to WorkShop View</Link>
           </div>
 
           {/* Removed Show Header Icon toggle */}

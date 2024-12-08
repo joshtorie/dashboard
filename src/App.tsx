@@ -7,6 +7,7 @@ import OpenRepairs from './pages/OpenRepairs';
 import Archive from './pages/Archive';
 import SearchPage from './pages/SearchPage';
 import Settings from './pages/Settings';
+import WorkShopView from './components/WorkShopView';
 import { useRepairStore } from './store/repairStore';
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
             <Route path="/archive" element={<Archive />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/workshop" element={<WorkShopView />} />
           </Routes>
         </main>
       </div>
