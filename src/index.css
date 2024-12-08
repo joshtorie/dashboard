@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bg-pastel-aqua {
+  background-color: #AEEEEE; /* Light Aqua */
+}
+
+.bg-pastel-tan {
+  background-color: #D2B48C; /* Tan */
+}
+
+.bg-pastel-blond {
+  background-color: #FAEBD7; /* Blond */
+}
+
+.bg-pastel-mauve {
+  background-color: #EAB8E4; /* Mauve */
+}
