@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRepairStore } from '../store/repairStore';
 
 const WorkShopView: React.FC = () => {
-  const { repairs } = useRepairStore();
-  const [color, setColor] = useState('bg-white'); // Default background color
+  const { repairs, updateRepairColor } = useRepairStore();
   const [sortOption, setSortOption] = useState('');
 
   // Filter repairs that are not solved
@@ -40,13 +39,13 @@ const WorkShopView: React.FC = () => {
       {sortedRepairs().map(repair => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
-          <div key={repair.id} className={`repair-card ${color} border p-4 rounded shadow-md`}> {/* Card styling */}
+          <div key={repair.id} className={`repair-card ${repair.color} border p-4 rounded shadow-md`}> {/* Card styling */}
             <p className="border-b pb-2">{days} days, {hours} hours</p> {/* Time open with thin border */}
             <h2 className="font-bold">{repair.customerName}</h2>
             <p className="text-sm float-right">ID: {repair.id}</p>
             <p>Complaint: {repair.complaint}</p>
             <p>Technician Notes: {repair.technicianNotes}</p>
-            <select onChange={(e) => setColor(e.target.value)} className="mt-2">
+            <select onChange={(e) => updateRepairColor(repair.id, e.target.value)} className="mt-2"> {/* Update color for specific card */}
               <option value="bg-white">Select Color</option>
               <option value="bg-pastel-aqua">Pastel Aqua</option>
               <option value="bg-pastel-tan">Pastel Tan</option>

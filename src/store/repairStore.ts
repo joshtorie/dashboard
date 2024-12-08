@@ -66,17 +66,15 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         id: `URB${parseInt(lastId.slice(3)) + 1}`, // Incrementing the last ID
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        backgroundColor: repair.backgroundColor || 'bg-white', // Default background color
         photo_url: null, // Explicitly initialize photo_url
       };
 
       const { data, error } = await supabase
         .from('repairs')
-        .insert([newRepair])
-        .select()
+        .insert([{ ...newRepair, backgroundColor: newRepair.backgroundColor || 'bg-white' }])
         .single();
 
-      if (error) throw error;
+      if (error) throw new Error(error.message);
       if (!data) throw new Error('Failed to create repair');
 
       set((state) => ({
@@ -99,10 +97,10 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
     try {
       const { error } = await supabase
         .from('repairs')
-        .update({ ...updates, updatedAt: new Date().toISOString() })
+        .update({ ...updates, updatedAt: new Date().toISOString(), backgroundColor: updates.backgroundColor || 'bg-white' })
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) throw new Error(error.message);
 
       set((state) => ({
         repairs: state.repairs.map((repair) =>
