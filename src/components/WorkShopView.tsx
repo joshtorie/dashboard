@@ -43,7 +43,7 @@ const WorkShopView: React.FC = () => {
           <div key={repair.id} className={`repair-card ${color} border p-4 rounded shadow-md`}> {/* Card styling */}
             <p className="border-b pb-2">{days} days, {hours} hours</p> {/* Time open with thin border */}
             <h2 className="font-bold">{repair.customerName}</h2>
-            <p className="text-sm float-right">Repair Ticket ID: {repair.id}</p>
+            <p className="text-sm float-right">ID: {repair.id}</p>
             <p>Complaint: {repair.complaint}</p>
             <p>Technician Notes: {repair.technicianNotes}</p>
             <select onChange={(e) => setColor(e.target.value)} className="mt-2">
