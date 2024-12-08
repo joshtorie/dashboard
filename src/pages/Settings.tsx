@@ -4,7 +4,7 @@ import { Printer, Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Settings() {
-  const { autoPrintEnabled, toggleAutoPrint, showHeaderIcon, toggleHeaderIcon } = useSettingsStore();
+  const { autoPrintEnabled, toggleAutoPrint, showHeaderIcon, toggleHeaderIcon, workshopViewEnabled, toggleWorkshopView } = useSettingsStore();
 
   return (
     <div className="space-y-6">
@@ -34,6 +34,17 @@ export default function Settings() {
                 }`}
               />
             </button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <h3 className="font-medium">WorkShop View</h3>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" checked={workshopViewEnabled} onChange={toggleWorkshopView} className="sr-only" />
+              <div className="w-11 h-6 bg-gray-200 rounded-full shadow-inner"></div>
+              <div className={`absolute w-6 h-6 bg-blue-600 rounded-full transition-transform ${workshopViewEnabled ? 'translate-x-5' : 'translate-x-0'}`}></div>
+            </label>
           </div>
 
           {/* Removed Show Header Icon toggle */}
