@@ -123,11 +123,14 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   },
 
   updateRepairColor: async (id: string, color: string) => {
+    console.log(`Updating color for repair ID: ${id} to ${color}`);
+    console.log('Updating local state...');
     set((state) => ({
       repairs: state.repairs.map((repair) => 
         repair.id === id ? { ...repair, backgroundColor: color } : repair
       ),
     }));
+    console.log('Updating Supabase...');
     try {
       const { error } = await supabase
         .from('repairs')
@@ -135,7 +138,9 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         .eq('id', id);
 
       if (error) throw new Error(error.message);
+      console.log('Color updated successfully');
     } catch (error) {
+      console.error('Error updating color:', error);
       set({ 
         error: error instanceof Error ? error.message : 'An error occurred',
       });
