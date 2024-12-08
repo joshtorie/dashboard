@@ -45,7 +45,11 @@ const WorkShopView: React.FC = () => {
             <p className="text-sm float-right">ID: {repair.id}</p>
             <p>Complaint: {repair.complaint}</p>
             <p>Technician Notes: {repair.technicianNotes}</p>
-            <select onChange={(e) => updateRepairColor(repair.id, e.target.value)} className="mt-2"> {/* Update color for specific card */}
+            <select onChange={(e) => { 
+              updateRepairColor(repair.id, e.target.value); 
+              console.log('Updated repairs:', repairs); 
+              console.log('Updated repair:', repair); 
+            }} className="mt-2"> {/* Update color for specific card */}
               <option value="bg-white">Select Color</option>
               <option value="bg-pastel-aqua">Pastel Aqua</option>
               <option value="bg-pastel-tan">Pastel Tan</option>
