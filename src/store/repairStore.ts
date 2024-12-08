@@ -11,6 +11,7 @@ interface RepairStore {
   createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<RepairCard>;
   updateRepair: (id: string, updates: Partial<RepairCard>) => Promise<void>;
   updateStatus: (id: string, status: RepairStatus) => Promise<void>;
+  updateRepairColor: (id: string, color: string) => Promise<void>;
 }
 
 export const useRepairStore = create<RepairStore>((set, get) => ({
@@ -119,5 +120,26 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
   updateStatus: async (id: string, status: RepairStatus): Promise<void> => {
     return useRepairStore.getState().updateRepair(id, { status });
+  },
+
+  updateRepairColor: async (id: string, color: string) => {
+    set((state) => ({
+      repairs: state.repairs.map((repair) => 
+        repair.id === id ? { ...repair, backgroundColor: color } : repair
+      ),
+    }));
+    try {
+      const { error } = await supabase
+        .from('repairs')
+        .update({ backgroundColor: color })
+        .eq('id', id);
+
+      if (error) throw new Error(error.message);
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'An error occurred',
+      });
+      throw error;
+    }
   },
 }));
