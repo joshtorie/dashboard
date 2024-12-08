@@ -55,19 +55,18 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
     try {
       const { data: lastRepair } = await supabase
         .from('repairs')
-        .select('id')
-        .order('id', { ascending: false })
+        .select('*')
+        .order('createdAt', { ascending: false })
         .limit(1);
 
       const lastId = lastRepair?.[0]?.id || 'URB0000';
-      const nextNumber = parseInt(lastId.substring(3)) + 1;
-      const nextId = `URB${nextNumber.toString().padStart(4, '0')}`;
 
       const newRepair = {
         ...repair,
-        id: nextId,
+        id: `URB${parseInt(lastId.slice(3)) + 1}`, // Incrementing the last ID
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        backgroundColor: repair.backgroundColor || 'bg-white', // Default background color
         photo_url: null, // Explicitly initialize photo_url
       };
 

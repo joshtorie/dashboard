@@ -10,4 +10,5 @@ export interface RepairCard {
   createdAt: string;
   updatedAt: string;
   photo_url?: string | null;
+  backgroundColor?: string; // Optional background color for the repair card
 }
