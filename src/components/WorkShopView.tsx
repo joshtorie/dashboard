@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useRepairStore } from '../store/repairStore';
+import { useLocation } from 'react-router-dom';
 
 const WorkShopView: React.FC = () => {
   const { repairs, updateRepairColor } = useRepairStore();
   const [sortOption, setSortOption] = useState('');
+  const [showBatteryOnly, setShowBatteryOnly] = useState(false);
+  const location = useLocation();
 
-  // Filter repairs that are not solved
-  const filteredRepairs = repairs.filter(repair => repair.status !== 'Solved');
+  useEffect(() => {
+    // Check URL parameters for battery filter
+    const searchParams = new URLSearchParams(location.search);
+    const filterParam = searchParams.get('filter');
+    setShowBatteryOnly(filterParam === 'battery');
+  }, [location.search]);
+
+  // Filter repairs that are not solved and handle battery filter
+  const filteredRepairs = repairs.filter(repair => {
+    if (repair.status === 'Solved') return false;
+    if (showBatteryOnly && repair.type !== 'Battery') return false;
+    return true;
+  });
 
   const calculateDuration = (createdAt: string) => {
     const createdAtDate = new Date(createdAt);
@@ -28,6 +42,17 @@ const WorkShopView: React.FC = () => {
   return (
     <div className="workshop-view grid grid-cols-5 gap-4"> {/* 5 columns layout */}
       <div className="filter-options col-span-1"> {/* Adjusted to take less space */}
+        <div className="mb-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={showBatteryOnly}
+              onChange={(e) => setShowBatteryOnly(e.target.checked)}
+              className="form-checkbox"
+            />
+            <span>Show Battery Only</span>
+          </label>
+        </div>
         <label>Sort by:</label>
         <select onChange={(e) => setSortOption(e.target.value)}>
           <option value="">Select</option>
@@ -40,6 +65,9 @@ const WorkShopView: React.FC = () => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
           <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md overflow-hidden`}> 
+            <div className="border p-2 my-2"> 
+              <p>{days} days, {hours} hours</p>
+            </div>
             <div className="flex justify-between items-center">
               <h2 className="font-bold">{repair.customerName}</h2>
               <p className="text-sm"># {repair.id}</p> 

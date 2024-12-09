@@ -87,6 +87,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
     customerName: '',
     phoneNumber: '',
     complaint: '',
+    type: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -322,7 +323,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         printRepairTicket(newRepair);
       }
       onClose();
-      setFormData({ customerName: '', phoneNumber: '', complaint: '' });
+      setFormData({ customerName: '', phoneNumber: '', complaint: '', type: '' });
       setImagePreview(null);
       setImageFile(null);
     } catch (error) {
@@ -386,6 +387,23 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="type" className="block font-medium text-gray-700">
+              Type
+            </label>
+            <select 
+              id="type" 
+              className="border p-2 w-full rounded-md"
+              value={formData.type}
+              onChange={(e) => setFormData({...formData, type: e.target.value})}
+            >
+              <option value="">Select Type</option>
+              <option value="Bike">Bike</option>
+              <option value="Scooter">Scooter</option>
+              <option value="Battery">Battery</option>
+            </select>
           </div>
 
           <div className="space-y-2">
