@@ -7,7 +7,7 @@ export const useStatusCounts = () => {
     Open: 0,
     Hold: 0,
     Notified: 0,
-    Completed: 0,
+    Solved: 0,
   });
 
   const repairs = useRepairStore(state => state.repairs);
