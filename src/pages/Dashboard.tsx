@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
 import { RepairStatusType } from '../types/repair';
 import { differenceInHours } from 'date-fns';
-import { AlertCircle, Clock } from 'lucide-react';
+import { AlertCircle, Clock, Battery } from 'lucide-react';
 import { useStatusCounts } from '../hooks/useStatusCounts';
 import DashboardStats from '../components/DashboardStats';
 
