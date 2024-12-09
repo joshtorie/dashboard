@@ -38,7 +38,10 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
 
       console.log('Supabase response:', { data: data?.length || 0, error });
 
-      if (error) throw error;
+      if (error) {
+        set({ error: error.message, loading: false });
+        throw error;
+      }
       if (!data) throw new Error('No repairs found');
 
       set({ repairs: data, loading: false, initialized: true });
