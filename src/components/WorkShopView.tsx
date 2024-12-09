@@ -39,27 +39,26 @@ const WorkShopView: React.FC = () => {
       {sortedRepairs().map(repair => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
-          <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md`}> 
-            <p className="border-b pb-2">{days} days, {hours} hours</p> 
+          <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md overflow-hidden`}> 
             <div className="flex justify-between items-center">
               <h2 className="font-bold">{repair.customerName}</h2>
-              <p className="text-sm">ID: {repair.id}</p> 
+              <p className="text-sm"># {repair.id}</p> 
             </div>
             <div className="border p-2 my-2"> 
-              <p>Complaint: {repair.complaint}</p>
+              <p>Issue: {repair.complaint}</p>
             </div>
             <div className="border p-2 my-2"> 
-              <p>Technician Notes: {repair.technicianNotes}</p>
+              <p>Notes: {repair.technicianNotes}</p>
             </div>
             <div className="flex items-center">
               <select onChange={(e) => updateRepairColor(repair.id, e.target.value)} className="mt-2 mr-2"> 
-                <option value="bg-white">Select Color</option>
-                <option value="bg-pastel-aqua">Pastel Aqua</option>
-                <option value="bg-pastel-tan">Pastel Tan</option>
-                <option value="bg-pastel-blond">Pastel Blond</option>
-                <option value="bg-pastel-mauve">Pastel Mauve</option>
+                <option value="bg-white">Free</option>
+                <option value="bg-pastel-aqua">Dani</option>
+                <option value="bg-pastel-tan">Raveh</option>
+                <option value="bg-pastel-blond">Dori</option>
+                <option value="bg-pastel-mauve">Lev</option>
               </select>
-              <span>Status: {repair.status}</span> 
+              <div className="border p-1">{repair.status}</div> 
             </div>
           </div>
         );
