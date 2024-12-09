@@ -21,7 +21,7 @@ export default function Dashboard() {
     { status: 'פתוח', englishStatus: 'Open' as RepairStatusType, color: 'bg-yellow-100 text-yellow-800' },
     { status: 'תקוע', englishStatus: 'Hold' as RepairStatusType, color: 'bg-red-100 text-red-800' },
     { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatusType, color: 'bg-blue-100 text-blue-800' },
-    { status: 'תיקוני סוללה', englishStatus: 'Battery', color: 'bg-blue-100 text-blue-800' },
+    { status: 'תיקוני סוללה', englishStatus: 'Battery', color: 'bg-green-100 text-green-800' },
   ];
 
   const filteredRepairs = repairs.filter(repair => {
