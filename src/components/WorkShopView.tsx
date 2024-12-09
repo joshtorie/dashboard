@@ -65,8 +65,9 @@ const WorkShopView: React.FC = () => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
           <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md overflow-hidden`}> 
-            <div className="border p-2 my-2"> 
-              <p>{days} days, {hours} hours</p>
+            <div className="bg-gray-100 border rounded p-2 mb-3 text-center"> 
+              <p className="text-sm font-medium text-gray-700">Time Open</p>
+              <p className="text-lg font-bold text-gray-900">{days}d {hours}h</p>
             </div>
             <div className="flex justify-between items-center">
               <h2 className="font-bold">{repair.customerName}</h2>
