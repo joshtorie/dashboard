@@ -282,6 +282,13 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         photo_url: null,
       });
 
+      // Check if newRepair is valid
+      if (!newRepair || !newRepair.id) {
+        toast.error('Failed to create repair. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
       // If we have an image file, upload it and update the repair
       if (imageFile) {
         console.log('Image file exists, starting upload process');
@@ -328,7 +335,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
       setImageFile(null);
     } catch (error) {
       console.error('Error creating repair:', error);
-      toast.error('שגיאה ביצירת כרטיס תיקון');
+      toast.error('שגיאה ביצירת תיקון');
     } finally {
       setIsSubmitting(false);
     }

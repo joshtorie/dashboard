@@ -12,6 +12,7 @@ export default function Dashboard() {
   const repairs = useRepairStore(state => state.repairs);
   const fetchRepairs = useRepairStore(state => state.fetchRepairs);
   const statusCounts = useStatusCounts();
+  const showBatteryOnly = true; // assuming this variable is defined somewhere
 
   useEffect(() => {
     fetchRepairs();
@@ -20,12 +21,22 @@ export default function Dashboard() {
   const statusCards = [
     { status: 'פתוח', englishStatus: 'Open' as RepairStatus, color: 'bg-yellow-100 text-yellow-800' },
     { status: 'תקוע', englishStatus: 'Hold' as RepairStatus, color: 'bg-red-100 text-red-800' },
-    { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatus, color: 'bg-blue-100 text-blue-800' },
   ];
 
-  const overdueRepairs = repairs.filter(
-    repair => repair.status === 'Open' && differenceInHours(new Date(), new Date(repair.createdAt)) >= 72
-  );
+  const filteredRepairs = repairs.filter(repair => {
+    if (!repair) return false;
+    if (!repair.status) return false;
+    if (repair.status === 'Solved') return false;
+    if (showBatteryOnly && repair.type !== 'Battery') return false;
+    return true;
+  });
+
+  const overdueRepairs = filteredRepairs.filter(repair => {
+    if (!repair) return false;
+    if (!repair.createdAt) return false;
+    if (repair.status === 'Open' && differenceInHours(new Date(), new Date(repair.createdAt)) >= 72) return true;
+    return false;
+  });
 
   return (
     <div className="space-y-6">
