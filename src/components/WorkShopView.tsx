@@ -1,26 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
-import { useLocation } from 'react-router-dom';
+import { differenceInHours } from 'date-fns';
 
 const WorkShopView: React.FC = () => {
   const { repairs, updateRepairColor } = useRepairStore();
   const [sortOption, setSortOption] = useState('');
-  const [showBatteryOnly, setShowBatteryOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    // Check URL parameters for battery filter
-    const searchParams = new URLSearchParams(location.search);
-    const filterParam = searchParams.get('filter');
-    setShowBatteryOnly(filterParam === 'battery');
+    const params = new URLSearchParams(location.search);
   }, [location.search]);
 
-  // Filter repairs that are not solved and handle battery filter
-  const filteredRepairs = repairs.filter(repair => {
-    if (repair.status === 'Solved') return false;
-    if (showBatteryOnly && repair.type !== 'Battery') return false;
-    return true;
-  });
+  const filteredAndSortedRepairs = useMemo(() => {
+    let result = repairs.filter((repair) => {
+      const matchesSearch = repair.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        repair.phoneNumber.includes(searchTerm) ||
+        repair.complaint.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesSearch;
+    });
+
+    if (sortOption === 'oldest') {
+      return result.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    }
+    if (sortOption === 'timeOpen') {
+      result.sort((a, b) => {
+        const timeA = differenceInHours(new Date(), new Date(a.createdAt));
+        const timeB = differenceInHours(new Date(), new Date(b.createdAt));
+        return timeB - timeA;
+      });
+    }
+    return result;
+  }, [repairs, searchTerm, sortOption]);
 
   const calculateDuration = (createdAt: string) => {
     const createdAtDate = new Date(createdAt);
@@ -31,14 +44,6 @@ const WorkShopView: React.FC = () => {
     return { days, hours };
   };
 
-  // Sort repairs based on selected option
-  const sortedRepairs = () => {
-    if (sortOption === 'oldest') {
-      return filteredRepairs.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    }
-    return filteredRepairs;
-  };
-
   return (
     <div className="workshop-view grid grid-cols-5 gap-4"> {/* 5 columns layout */}
       <div className="filter-options col-span-1"> {/* Adjusted to take less space */}
@@ -46,11 +51,13 @@ const WorkShopView: React.FC = () => {
         <select onChange={(e) => setSortOption(e.target.value)}>
           <option value="">Select</option>
           <option value="oldest">Oldest Card</option>
+          <option value="timeOpen">Time Open</option>
           <option value="color">Background Color</option>
           <option value="status">Status</option>
         </select>
+        <input type="search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search" />
       </div>
-      {sortedRepairs().map(repair => {
+      {filteredAndSortedRepairs.map(repair => {
         const { days, hours } = calculateDuration(repair.createdAt);
         return (
           <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md overflow-hidden`}> 

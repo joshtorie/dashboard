@@ -7,13 +7,13 @@ import { RepairStatus } from '../types/repair';
 export default function OpenRepairs() {
   const location = useLocation();
   const repairs = useRepairStore((state) => state.repairs);
-  const [filter, setFilter] = useState<'Open' | 'Hold' | 'Notified' | 'All'>('All');
+  const [filter, setFilter] = useState<'Open' | 'Hold' | 'Notified' | 'Battery' | 'All'>('All');
 
   // Read query parameters to set the filter
   React.useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const status = queryParams.get('status');
-    if (status && ['Open', 'Hold', 'Notified'].includes(status)) {
+    if (status && ['Open', 'Hold', 'Notified', 'Battery'].includes(status)) {
       setFilter(status);
     }
   }, [location.search]);
@@ -23,7 +23,7 @@ export default function OpenRepairs() {
     .filter((repair) => repair.status !== 'Solved')
     .filter((repair) => {
       if (filter === 'All') return true;
-      return repair.status === filter;
+      return repair.status === filter || (filter === 'Battery' && repair.type === 'Battery');
     });
 
   return (
@@ -39,6 +39,7 @@ export default function OpenRepairs() {
           <option value="Open">פתוח</option>
           <option value="Hold">בהמתנה</option>
           <option value="Notified">ממתין לאיסוף</option>
+          <option value="Battery">סוללה</option>
         </select>
       </div>
       {filteredRepairs.length > 0 ? (
