@@ -6,6 +6,7 @@ import { differenceInHours } from 'date-fns';
 import { AlertCircle, Clock } from 'lucide-react';
 import { useStatusCounts } from '../hooks/useStatusCounts';
 import DashboardStats from '../components/DashboardStats';
+import Battery from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -56,6 +57,31 @@ export default function Dashboard() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div
+        onClick={() => navigate('/repairs?status=Notified')}
+        className="bg-white p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Notified Repairs</p>
+            <p className="text-2xl font-semibold">{statusCounts['Notified'] || 0}</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        onClick={() => navigate('/repairs?filter=battery')}
+        className="bg-white p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Battery Repairs</p>
+            <p className="text-2xl font-semibold">{statusCounts['Notified'] || 0}</p>
+          </div>
+          <Battery className="h-8 w-8 text-blue-500" />
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6">
