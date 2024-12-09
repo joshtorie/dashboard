@@ -12,7 +12,6 @@ export default function Dashboard() {
   const repairs = useRepairStore(state => state.repairs);
   const fetchRepairs = useRepairStore(state => state.fetchRepairs);
   const statusCounts = useStatusCounts();
-  const showBatteryOnly = true; // assuming this variable is defined somewhere
 
   useEffect(() => {
     fetchRepairs();
@@ -28,7 +27,6 @@ export default function Dashboard() {
     if (!repair) return false;
     if (!repair.status) return false;
     if (repair.status === 'Solved') return false;
-    if (showBatteryOnly && repair.type !== 'Battery') return false;
     return true;
   });
 
