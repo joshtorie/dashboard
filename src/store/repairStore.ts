@@ -54,6 +54,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
   createRepair: async (repair) => {
     set({ loading: true, error: null });
     try {
+      console.log('Starting createRepair...');
       const { data: lastRepair } = await supabase
         .from('repairs')
         .select('*')
@@ -70,21 +71,29 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         photo_url: null, // Explicitly initialize photo_url
       };
 
+      console.log('Creating repair with data:', newRepair);
+
       const { data, error } = await supabase
         .from('repairs')
         .insert([{ ...newRepair, backgroundColor: newRepair.backgroundColor || 'bg-white' }])
         .single();
 
-      if (error) throw new Error(error.message);
-      if (!data) throw new Error('Failed to create repair');
+      console.log('Supabase response:', { data, error });
+
+      if (error) {
+        console.error('Error creating repair:', error);
+        throw new Error(error.message);
+      }
 
       set((state) => ({
         repairs: [data, ...state.repairs],
         loading: false,
       }));
 
+      console.log('Repair created successfully:', data);
       return data;
     } catch (error) {
+      console.error('Error in createRepair:', error);
       set({ 
         error: error instanceof Error ? error.message : 'An error occurred',
         loading: false 
