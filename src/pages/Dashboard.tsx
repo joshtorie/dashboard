@@ -5,6 +5,7 @@ import { RepairStatus } from '../types/repair';
 import { differenceInHours } from 'date-fns';
 import { AlertCircle, Clock } from 'lucide-react';
 import { useStatusCounts } from '../hooks/useStatusCounts';
+import DashboardStats from '../components/DashboardStats';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export default function Dashboard() {
       <div className="flex justify-center mb-4">
         <img src="https://raw.githubusercontent.com/joshtorie/dashboard/main/logo.png" alt="Logo" className="max-w-xs h-auto" />
       </div>
+      <DashboardStats />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {statusCards.map((card) => (
           <div
