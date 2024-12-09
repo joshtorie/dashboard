@@ -183,9 +183,17 @@ export default function RepairCard({ repair }: RepairCardProps) {
         : 'shadow-sm'
     } overflow-hidden`}>
       <div className={`p-4 ${isExpanded ? 'bg-white' : ''}`}>
-        <div className="flex items-center">
-          <p className="text-gray-800 font-bold mr-4">{repair.customerName}</p>
-          <p className="text-gray-500">#ID: {repair.id}</p>
+        <div className="flex justify-between items-start">
+          <div className="flex items-center">
+            <p className="text-gray-800 font-bold mr-4">{repair.customerName}</p>
+            <p className="text-gray-500">{repair.id}</p>
+          </div>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            {isExpanded ? <ChevronUp /> : <ChevronDown />}
+          </button>
         </div>
         <div className="flex items-center text-gray-500">
           <span className="mr-2">{format(new Date(repair.createdAt), 'EEEE, d MMMM, HH:mm')}</span>
