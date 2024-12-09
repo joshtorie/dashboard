@@ -21,6 +21,7 @@ export default function Dashboard() {
     { status: 'פתוח', englishStatus: 'Open' as RepairStatusType, color: 'bg-yellow-100 text-yellow-800' },
     { status: 'תקוע', englishStatus: 'Hold' as RepairStatusType, color: 'bg-red-100 text-red-800' },
     { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatusType, color: 'bg-blue-100 text-blue-800' },
+    { status: 'תיקוני סוללה', englishStatus: 'Battery', color: 'bg-blue-100 text-blue-800' },
   ];
 
   const filteredRepairs = repairs.filter(repair => {
@@ -54,7 +55,7 @@ export default function Dashboard() {
           >
             <h3 className="text-lg font-semibold">{card.status}</h3>
             <div className="text-2xl font-bold mt-2">
-              {statusCounts[card.englishStatus] || 0}
+              {card.englishStatus === 'Battery' ? batteryCount : statusCounts[card.englishStatus] || 0}
             </div>
           </div>
         ))}
