@@ -42,17 +42,6 @@ const WorkShopView: React.FC = () => {
   return (
     <div className="workshop-view grid grid-cols-5 gap-4"> {/* 5 columns layout */}
       <div className="filter-options col-span-1"> {/* Adjusted to take less space */}
-        <div className="mb-4">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={showBatteryOnly}
-              onChange={(e) => setShowBatteryOnly(e.target.checked)}
-              className="form-checkbox"
-            />
-            <span>Show Battery Only</span>
-          </label>
-        </div>
         <label>Sort by:</label>
         <select onChange={(e) => setSortOption(e.target.value)}>
           <option value="">Select</option>
