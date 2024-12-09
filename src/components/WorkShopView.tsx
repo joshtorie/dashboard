@@ -56,37 +56,39 @@ const WorkShopView: React.FC = () => {
           <option value="status">Status</option>
         </select>
         {/* Removed the search input field */}
-        {filteredAndSortedRepairs.map(repair => {
-          const { days, hours } = calculateDuration(repair.createdAt);
-          return (
-            <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md overflow-hidden`}> 
-              <div className="bg-gray-100 border rounded p-2 mb-3 text-center"> 
-                <p className="text-sm font-medium text-gray-700">Time Open</p>
-                <p className="text-lg font-bold text-gray-900">{days}d {hours}h</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredAndSortedRepairs.map(repair => {
+            const { days, hours } = calculateDuration(repair.createdAt);
+            return (
+              <div key={repair.id} className={`repair-card ${repair.backgroundColor} border p-4 rounded shadow-md overflow-hidden`}> 
+                <div className="bg-gray-100 border rounded p-2 mb-3 text-center"> 
+                  <p className="text-sm font-medium text-gray-700">Time Open</p>
+                  <p className="text-lg font-bold text-gray-900">{days}d {hours}h</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <h2 className="font-bold">{repair.customerName}</h2>
+                  <p className="text-sm"># {repair.id}</p> 
+                </div>
+                <div className="border p-2 my-2"> 
+                  <p>Issue: {repair.complaint}</p>
+                </div>
+                <div className="border p-2 my-2"> 
+                  <p>Notes: {repair.technicianNotes}</p>
+                </div>
+                <div className="flex items-center">
+                  <select onChange={(e) => updateRepairColor(repair.id, e.target.value)} className="mt-2 mr-2"> 
+                    <option value="bg-white">Free</option>
+                    <option value="bg-pastel-aqua">Dani</option>
+                    <option value="bg-pastel-tan">Raveh</option>
+                    <option value="bg-pastel-blond">Dori</option>
+                    <option value="bg-pastel-mauve">Lev</option>
+                  </select>
+                  <div className="border p-1">{repair.status}</div> 
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <h2 className="font-bold">{repair.customerName}</h2>
-                <p className="text-sm"># {repair.id}</p> 
-              </div>
-              <div className="border p-2 my-2"> 
-                <p>Issue: {repair.complaint}</p>
-              </div>
-              <div className="border p-2 my-2"> 
-                <p>Notes: {repair.technicianNotes}</p>
-              </div>
-              <div className="flex items-center">
-                <select onChange={(e) => updateRepairColor(repair.id, e.target.value)} className="mt-2 mr-2"> 
-                  <option value="bg-white">Free</option>
-                  <option value="bg-pastel-aqua">Dani</option>
-                  <option value="bg-pastel-tan">Raveh</option>
-                  <option value="bg-pastel-blond">Dori</option>
-                  <option value="bg-pastel-mauve">Lev</option>
-                </select>
-                <div className="border p-1">{repair.status}</div> 
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
