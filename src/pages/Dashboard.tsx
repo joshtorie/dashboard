@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRepairStore } from '../store/repairStore';
-import { RepairStatus } from '../types/repair';
+import { RepairStatusType } from '../types/repair';
 import { differenceInHours } from 'date-fns';
 import { AlertCircle, Clock } from 'lucide-react';
 import { useStatusCounts } from '../hooks/useStatusCounts';
@@ -18,9 +18,9 @@ export default function Dashboard() {
   }, [fetchRepairs]);
 
   const statusCards = [
-    { status: 'פתוח', englishStatus: 'Open' as RepairStatus, color: 'bg-yellow-100 text-yellow-800' },
-    { status: 'תקוע', englishStatus: 'Hold' as RepairStatus, color: 'bg-red-100 text-red-800' },
-    { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatus, color: 'bg-blue-100 text-blue-800' },
+    { status: 'פתוח', englishStatus: 'Open' as RepairStatusType, color: 'bg-yellow-100 text-yellow-800' },
+    { status: 'תקוע', englishStatus: 'Hold' as RepairStatusType, color: 'bg-red-100 text-red-800' },
+    { status: 'ממתין לאיסוף', englishStatus: 'Notified' as RepairStatusType, color: 'bg-blue-100 text-blue-800' },
   ];
 
   const filteredRepairs = repairs.filter(repair => {
