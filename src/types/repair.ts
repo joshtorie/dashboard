@@ -1,4 +1,4 @@
-export type RepairStatus = 'Open' | 'Hold' | 'Notified' | 'Solved';
+export type RepairStatusType = 'Open' | 'Hold' | 'Notified' | 'Solved';
 
 export interface RepairCard {
   id: string;
@@ -6,7 +6,7 @@ export interface RepairCard {
   phoneNumber: string;
   complaint: string;
   technicianNotes: string;
-  status: RepairStatus;
+  status: RepairStatusType;
   type: 'Bike' | 'Scooter' | 'Battery'; // Define specific types for repairs
   createdAt: string;
   updatedAt: string;

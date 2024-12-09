@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import RepairCard from '../components/RepairCard';
 import { useRepairStore } from '../store/repairStore';
-import { RepairStatus } from '../types/repair';
+import { RepairStatusType } from '../types/repair';
 
 export default function OpenRepairs() {
   const location = useLocation();

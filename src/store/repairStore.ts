@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { RepairCard, RepairStatus } from '../types/repair';
+import { RepairCard, RepairStatusType } from '../types/repair';
 import { supabase } from '../lib/supabase';
 
 interface RepairStore {
@@ -10,7 +10,7 @@ interface RepairStore {
   fetchRepairs: () => Promise<void>;
   createRepair: (repair: Omit<RepairCard, 'id' | 'createdAt' | 'updatedAt'>) => Promise<RepairCard>;
   updateRepair: (id: string, updates: Partial<RepairCard>) => Promise<void>;
-  updateStatus: (id: string, status: RepairStatus) => Promise<void>;
+  updateStatus: (id: string, status: RepairStatusType) => Promise<void>;
   updateRepairColor: (id: string, color: string) => Promise<void>;
 }
 
@@ -130,7 +130,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
     }
   },
 
-  updateStatus: async (id: string, status: RepairStatus): Promise<void> => {
+  updateStatus: async (id: string, status: RepairStatusType): Promise<void> => {
     return useRepairStore.getState().updateRepair(id, { status });
   },
 
