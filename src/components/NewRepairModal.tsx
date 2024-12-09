@@ -280,6 +280,7 @@ export default function NewRepairModal({ isOpen, onClose }: NewRepairModalProps)
         status: 'Open',
         technicianNotes: '',
         photo_url: null,
+        type: formData.type as 'Bike' | 'Scooter' | 'Battery',
       });
 
       // Check if newRepair is valid

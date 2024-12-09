@@ -9,7 +9,7 @@ const DashboardStats: React.FC = () => {
 
   // Count repairs with type "Battery"
   const batteryCount = repairs.filter(
-    (repair) => repair.type === 'Battery' && repair.status !== 'Solved'
+    (repair) => repair !== null && repair.type === 'Battery' && repair.status !== 'Solved'
   ).length;
 
   const handleBatteryClick = () => {

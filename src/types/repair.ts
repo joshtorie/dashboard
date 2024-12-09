@@ -7,6 +7,7 @@ export interface RepairCard {
   complaint: string;
   technicianNotes: string;
   status: RepairStatus;
+  type: 'Bike' | 'Scooter' | 'Battery'; // Define specific types for repairs
   createdAt: string;
   updatedAt: string;
   photo_url?: string | null;
