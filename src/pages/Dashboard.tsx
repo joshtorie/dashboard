@@ -38,6 +38,8 @@ export default function Dashboard() {
     return false;
   });
 
+  const batteryCount = repairs.filter(repair => repair.type === 'Battery' && repair.status !== 'Solved').length;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-center mb-4">
@@ -78,7 +80,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-500 mb-1">Battery Repairs</p>
-            <p className="text-2xl font-semibold">{statusCounts['Notified'] || 0}</p>
+            <p className="text-2xl font-semibold">{batteryCount}</p>
           </div>
           <Battery className="h-8 w-8 text-blue-500" />
         </div>
