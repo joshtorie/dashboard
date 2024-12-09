@@ -72,18 +72,14 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div
-        onClick={() => navigate('/repairs?filter=battery')}
-        className="bg-white p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
-      >
+      {/* Remove the first battery repairs card */}
+      {/* <div onClick={() => navigate('/repairs?filter=battery')} className="bg-white p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-gray-500 mb-1">Battery Repairs</p>
-            <p className="text-2xl font-semibold">{batteryCount}</p>
-          </div>
+          <p className="text-sm text-gray-500 mb-1">Battery Repairs</p>
+          <p className="text-2xl font-semibold">{batteryCount}</p>
           <Battery className="h-8 w-8 text-blue-500" />
         </div>
-      </div>
+      </div> */}
 
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex items-center space-x-2 mb-4">
