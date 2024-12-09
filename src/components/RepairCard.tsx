@@ -100,8 +100,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
       if (data?.publicUrl) {
         console.log('Refreshed image URL:', data.publicUrl);
         setImageUrl(data.publicUrl);
+      } else {
+        setImageUrl('');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error refreshing image URL:', error);
     }
   };
