@@ -185,7 +185,7 @@ export default function RepairCard({ repair }: RepairCardProps) {
       <div className={`p-4 ${isExpanded ? 'bg-white' : ''}`}>
         <div className="flex items-center">
           <p className="text-gray-800 font-bold mr-4">{repair.customerName}</p>
-          <p className="text-gray-500">ID: {repair.id}</p>
+          <p className="text-gray-500">#ID: {repair.id}</p>
         </div>
         <div className="flex items-center text-gray-500">
           <span className="mr-2">{format(new Date(repair.createdAt), 'EEEE, d MMMM, HH:mm')}</span>
@@ -246,6 +246,10 @@ export default function RepairCard({ repair }: RepairCardProps) {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div>
+              <a href={`tel:${repair.phoneNumber}`} className="text-blue-600 hover:text-blue-700">{repair.phoneNumber}</a>
             </div>
 
             {repair.photo_url && imageUrl && (
