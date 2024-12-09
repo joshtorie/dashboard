@@ -184,9 +184,9 @@ export default function RepairCard({ repair }: RepairCardProps) {
     } overflow-hidden`}>
       <div className={`p-4 ${isExpanded ? 'bg-white' : ''}`}>
         <div className="flex justify-between items-start">
-          {isExpanded ? <p className="text-gray-800 font-bold">{repair.customerName}</p> : null}
+          <p className="text-gray-800 font-bold">{repair.customerName}</p>
           <div>
-            <a href={`tel:${repair.phoneNumber}`} className="text-gray-500">טלפון: {repair.phoneNumber}</a>
+            <a href={`tel:${repair.phoneNumber}`} className="text-gray-500">{repair.phoneNumber}</a>
           </div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
