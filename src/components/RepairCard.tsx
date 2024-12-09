@@ -183,26 +183,13 @@ export default function RepairCard({ repair }: RepairCardProps) {
         : 'shadow-sm'
     } overflow-hidden`}>
       <div className={`p-4 ${isExpanded ? 'bg-white' : ''}`}>
-        <div className="flex justify-between items-start">
-          <p className="text-gray-800 font-bold">{repair.customerName}</p>
-          <div>
-            <a href={`tel:${repair.phoneNumber}`} className="text-gray-500">{repair.phoneNumber}</a>
-          </div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            {isExpanded ? <ChevronUp /> : <ChevronDown />}
-          </button>
+        <div className="flex items-center">
+          <p className="text-gray-800 font-bold mr-4">{repair.customerName}</p>
+          <p className="text-gray-500">ID: {repair.id}</p>
         </div>
-
-        <div className="mt-2 flex justify-between items-center">
-          <div className="text-sm text-gray-500">
-            {format(new Date(repair.createdAt), "EEEE, d MMMM, HH:mm")}
-          </div>
-          <div className={`px-2 py-1 rounded-full text-sm ${getStatusColor(repair.status)}`}>
-            {statusTranslations[repair.status]}
-          </div>
+        <div className="flex items-center text-gray-500">
+          <span className="mr-2">{format(new Date(repair.createdAt), 'EEEE, d MMMM, HH:mm')}</span>
+          <span className={getStatusColor(repair.status)}>{statusTranslations[repair.status]}</span>
         </div>
 
         {isExpanded && (
