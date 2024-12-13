@@ -71,6 +71,7 @@ export const useRepairStore = create<RepairStore>((set, get) => ({
         id: `URB${parseInt(lastId.slice(3)) + 1}`, // Incrementing the last ID
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        status: 'Open' as RepairStatusType, // Explicitly set the initial status
         photo_url: null, // Explicitly initialize photo_url
       };
 

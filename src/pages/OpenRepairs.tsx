@@ -20,8 +20,9 @@ export default function OpenRepairs() {
 
   // First filter out any solved repairs, then apply the status filter
   const filteredRepairs = repairs
-    .filter((repair) => repair.status !== 'Solved')
+    .filter((repair) => repair && repair.status !== 'Solved')
     .filter((repair) => {
+      if (!repair || !repair.status) return false;
       if (filter === 'All') return true;
       return repair.status === filter || (filter === 'Battery' && repair.type === 'Battery');
     });
