@@ -202,6 +202,13 @@ export default function RepairCard({ repair }: RepairCardProps) {
 
         {isExpanded && (
           <div className="mt-4 space-y-4">
+            <div className="flex items-center">
+              <Phone className="w-5 h-5 text-blue-600 mr-2" />
+              <a href={`tel:${repair.phoneNumber}`} className="text-blue-600 hover:text-blue-700 text-lg">
+                {repair.phoneNumber}
+              </a>
+            </div>
+
             <div>
               <label className="font-medium block mb-2">תלונת לקוח:</label>
               {isEditing ? (
@@ -254,10 +261,6 @@ export default function RepairCard({ repair }: RepairCardProps) {
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div>
-              <a href={`tel:${repair.phoneNumber}`} className="text-blue-600 hover:text-blue-700">{repair.phoneNumber}</a>
             </div>
 
             {repair.photo_url && imageUrl && (
